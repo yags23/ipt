@@ -8,43 +8,142 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,sans-serif;background:#f8f7f4;color:#1a1a1a;padding:1rem}
 h1{font-size:1.4rem;font-weight:500;margin-bottom:0.75rem;color:#333}
+
+/* Instruction banner */
+#instructions{background:#fffbe6;border:1px solid #f0d060;border-radius:10px;padding:0.65rem 1rem;margin-bottom:0.85rem;display:flex;flex-wrap:wrap;gap:0.5rem 1.5rem;align-items:flex-start}
+#instructions h2{font-size:13px;font-weight:600;color:#7a5c00;margin-bottom:4px;width:100%}
+.inst-item{display:flex;align-items:flex-start;gap:6px;font-size:12px;color:#5a4400;line-height:1.45}
+.inst-icon{font-size:15px;flex-shrink:0;margin-top:-1px}
+
+/* Toggle bar */
+#toggle-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:0.65rem;padding:0.55rem 0.85rem;background:#fff;border:1px solid #ddd;border-radius:10px}
+#toggle-bar span.tb-label{font-size:12px;color:#888;margin-right:4px}
+.toggle-group{display:flex;align-items:center;gap:6px}
+.toggle-group label{font-size:12px;color:#444;cursor:pointer;user-select:none}
+.tog{position:relative;width:36px;height:20px;display:inline-block;flex-shrink:0}
+.tog input{opacity:0;width:0;height:0}
+.tog-slider{position:absolute;inset:0;background:#ccc;border-radius:20px;cursor:pointer;transition:background 0.2s}
+.tog-slider:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform 0.2s}
+.tog input:checked+.tog-slider{background:#333}
+.tog input:checked+.tog-slider:before{transform:translateX(16px)}
+
+/* Controls */
 #controls{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:0.75rem;align-items:center}
 #controls span{font-size:13px;color:#666}
 .filter-btn{font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid #ccc;background:#fff;cursor:pointer;color:#555;transition:all 0.15s}
 .filter-btn:hover,.filter-btn.active{background:#333;color:#fff;border-color:#333}
+
+/* Table */
 #table-area{overflow-x:auto;padding-bottom:0.5rem}
 #pt-grid{display:grid;grid-template-columns:repeat(18,minmax(34px,1fr));gap:2px;min-width:640px}
-.cell{width:100%;aspect-ratio:1;border-radius:4px;border:1px solid transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform 0.1s,box-shadow 0.1s;position:relative}
+.cell{width:100%;aspect-ratio:1;border-radius:4px;border:2px solid transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform 0.1s,box-shadow 0.1s;position:relative;user-select:none}
 .cell:hover{transform:scale(1.18);z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
-.cell .num{font-size:8px;opacity:0.7;line-height:1}
+.cell.selected{border-color:#1a1a1a !important;box-shadow:0 0 0 1px #1a1a1a;transform:scale(1.08);z-index:5}
+.cell .num{font-size:10px;font-weight:600;opacity:0.75;line-height:1}
 .cell .sym{font-size:13px;font-weight:600;line-height:1.1}
 .cell.dim{opacity:0.12}
-.cell.empty{cursor:default;background:transparent!important}
+.hide-nums .cell .num{visibility:hidden}
+.hide-syms .cell .sym{visibility:hidden}
+.hide-colors .cell:not(.empty){background:#e8e7e3 !important;color:#555 !important;border-color:transparent !important}
+.cell.empty{cursor:default;background:transparent!important;border-color:transparent!important}
 .lbl{font-size:9px;color:#888;display:flex;align-items:center;justify-content:flex-end;padding-right:3px}
+
+/* Legend */
 #legend{display:flex;flex-wrap:wrap;gap:6px;margin:0.75rem 0}
 .leg-item{display:flex;align-items:center;gap:4px;font-size:11px;color:#555}
 .leg-dot{width:10px;height:10px;border-radius:3px}
+
+/* Compound bar */
+#compound-bar{display:none;margin:0.5rem 0;padding:0.75rem 1rem;background:#fff;border:1px solid #ddd;border-radius:10px;align-items:center;gap:0.75rem;flex-wrap:wrap}
+#compound-bar.show{display:flex}
+#compound-selected{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.sel-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:12px;font-weight:600;background:#eee;cursor:pointer}
+.sel-chip .rm{font-size:14px;opacity:0.5;line-height:1}
+.sel-chip .rm:hover{opacity:1}
+#predict-btn{padding:5px 14px;border-radius:20px;border:none;background:#333;color:#fff;font-size:12px;cursor:pointer;white-space:nowrap}
+#predict-btn:hover{background:#000}
+#clear-sel-btn{padding:5px 10px;border-radius:20px;border:1px solid #ccc;background:#fff;color:#666;font-size:12px;cursor:pointer}
+
+/* Element panel */
 #panel{margin-top:1rem;border:1px solid #ddd;border-radius:12px;padding:1.25rem;display:none;background:#fff}
 #panel.show{display:block}
-#panel-top{display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap}
+#panel-inner{display:grid;grid-template-columns:1fr 220px;gap:1.25rem}
+@media(max-width:600px){#panel-inner{grid-template-columns:1fr}}
+#panel-left{}
+#panel-top{display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap;margin-bottom:1rem}
 #panel-num{font-size:40px;font-weight:300;color:#999;min-width:44px;line-height:1}
-#panel-sym{font-size:52px;font-weight:600;line-height:1}
 #panel-info{flex:1;min-width:140px}
 #panel-name{font-size:20px;font-weight:500}
 #panel-cat{font-size:12px;color:#888;margin-top:2px}
-#panel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:1rem}
+#panel-sym{font-size:52px;font-weight:600;line-height:1}
+.close-btn{font-size:22px;cursor:pointer;color:#999;background:none;border:none;padding:0;line-height:1;margin-left:auto}
+.close-btn:hover{color:#333}
+#panel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 @media(max-width:480px){#panel-grid{grid-template-columns:repeat(2,1fr)}}
 .p-stat{background:#f5f4f1;border-radius:8px;padding:0.6rem 0.75rem}
 .p-stat-label{font-size:11px;color:#888}
 .p-stat-val{font-size:14px;font-weight:500;margin-top:2px;word-break:break-all}
-.close-btn{font-size:22px;cursor:pointer;color:#999;background:none;border:none;padding:0;line-height:1;margin-left:auto}
-.close-btn:hover{color:#333}
+#panel-right{display:flex;flex-direction:column;gap:10px;min-width:0}
+#atom-diagram{width:100%;aspect-ratio:1;max-width:220px}
+#element-image-wrap{width:100%;border-radius:8px;overflow:hidden;background:#f0efe9;display:flex;align-items:center;justify-content:center;min-height:90px}
+#element-image{width:100%;height:auto;display:none;border-radius:8px}
+#element-image-placeholder{font-size:12px;color:#aaa;padding:1rem;text-align:center}
+#image-caption{font-size:10px;color:#aaa;text-align:center;margin-top:4px}
+
+/* Compound modal */
+#compound-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1000;align-items:center;justify-content:center;padding:1rem}
+#compound-modal.show{display:flex}
+#compound-box{background:#fff;border-radius:14px;padding:1.5rem;max-width:520px;width:100%;position:relative;max-height:90vh;overflow-y:auto}
+#compound-box h2{font-size:1.2rem;font-weight:600;margin-bottom:1rem}
+.compound-formula{font-size:2.5rem;font-weight:700;text-align:center;margin:0.5rem 0 0.25rem;letter-spacing:1px}
+.compound-name{font-size:1rem;color:#555;text-align:center;margin-bottom:1rem}
+.bond-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin:0 auto 1rem;display:block;width:fit-content}
+.bond-ionic{background:#faeeda;color:#412402}
+.bond-covalent{background:#e1f5ee;color:#04342c}
+.bond-metallic{background:#e6f1fb;color:#042c53}
+.bond-mixed{background:#f3eeff;color:#26215C}
+.compound-details{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:0.75rem}
+.c-stat{background:#f5f4f1;border-radius:8px;padding:0.6rem 0.75rem}
+.c-stat-label{font-size:11px;color:#888}
+.c-stat-val{font-size:13px;font-weight:500;margin-top:2px}
+#compound-close{position:absolute;top:1rem;right:1rem;font-size:22px;cursor:pointer;color:#999;background:none;border:none;line-height:1}
+#compound-close:hover{color:#333}
+.compound-note{font-size:12px;color:#777;margin-top:0.75rem;line-height:1.5;background:#f9f8f5;border-radius:8px;padding:0.6rem 0.75rem}
+
+/* Atom SVG animations */
+@keyframes orbit1{from{transform:rotate(0deg) translateX(var(--r)) rotate(0deg)}to{transform:rotate(360deg) translateX(var(--r)) rotate(-360deg)}}
+@keyframes orbit2{from{transform:rotate(120deg) translateX(var(--r)) rotate(-120deg)}to{transform:rotate(480deg) translateX(var(--r)) rotate(-480deg)}}
+@keyframes orbit3{from{transform:rotate(240deg) translateX(var(--r)) rotate(-240deg)}to{transform:rotate(600deg) translateX(var(--r)) rotate(-600deg)}}
 </style>
 </head>
 <body>
 <h1>Periodic Table of Elements</h1>
+
+<div id="instructions">
+  <h2>How to use this periodic table</h2>
+  <div class="inst-item"><span class="inst-icon">🖱️</span><span><strong>Click</strong> any element to open its detail panel — atomic data, Bohr atom diagram, and a Wikipedia photo.</span></div>
+  <div class="inst-item"><span class="inst-icon">⇧</span><span><strong>Shift+click</strong> (or Ctrl/Cmd+click) two or more elements to select them, then hit <strong>⚗ Predict compound</strong> to see the chemical formula and bond type.</span></div>
+  <div class="inst-item"><span class="inst-icon">🎓</span><span>Use the <strong>toggles below</strong> to hide atomic numbers, element symbols, or colours for self-testing.</span></div>
+</div>
+
+<div id="toggle-bar">
+  <span class="tb-label">Display:</span>
+  <div class="toggle-group">
+    <label class="tog"><input type="checkbox" id="tog-nums" checked><span class="tog-slider"></span></label>
+    <label for="tog-nums">Atomic numbers</label>
+  </div>
+  <div class="toggle-group">
+    <label class="tog"><input type="checkbox" id="tog-syms" checked><span class="tog-slider"></span></label>
+    <label for="tog-syms">Element symbols</label>
+  </div>
+  <div class="toggle-group">
+    <label class="tog"><input type="checkbox" id="tog-colors" checked><span class="tog-slider"></span></label>
+    <label for="tog-colors">Category colours</label>
+  </div>
+</div>
+
 <div id="controls">
-  <span>Filter by category:</span>
+  <span>Filter:</span>
   <button class="filter-btn active" data-cat="all">All</button>
   <button class="filter-btn" data-cat="alkali-metal">Alkali metals</button>
   <button class="filter-btn" data-cat="alkaline-earth">Alkaline earths</button>
@@ -57,25 +156,57 @@ h1{font-size:1.4rem;font-weight:500;margin-bottom:0.75rem;color:#333}
   <button class="filter-btn" data-cat="lanthanide">Lanthanides</button>
   <button class="filter-btn" data-cat="actinide">Actinides</button>
 </div>
+
 <div id="table-area"><div id="pt-grid"></div></div>
 <div id="legend"></div>
+
+<div id="compound-bar">
+  <span style="font-size:12px;color:#666;white-space:nowrap">Selected:</span>
+  <div id="compound-selected"></div>
+  <button id="predict-btn">⚗ Predict compound</button>
+  <button id="clear-sel-btn">Clear</button>
+</div>
+
 <div id="panel">
-  <div id="panel-top">
-    <div id="panel-num"></div>
-    <div id="panel-info">
-      <div id="panel-name"></div>
-      <div id="panel-cat"></div>
+  <div id="panel-inner">
+    <div id="panel-left">
+      <div id="panel-top">
+        <div id="panel-num"></div>
+        <div id="panel-info">
+          <div id="panel-name"></div>
+          <div id="panel-cat"></div>
+        </div>
+        <div id="panel-sym"></div>
+        <button class="close-btn" id="close-panel">×</button>
+      </div>
+      <div id="panel-grid">
+        <div class="p-stat"><div class="p-stat-label">Atomic mass</div><div class="p-stat-val" id="p-mass">—</div></div>
+        <div class="p-stat"><div class="p-stat-label">Period / Group</div><div class="p-stat-val" id="p-pg">—</div></div>
+        <div class="p-stat"><div class="p-stat-label">Electron config</div><div class="p-stat-val" id="p-ec" style="font-size:12px">—</div></div>
+        <div class="p-stat"><div class="p-stat-label">Electronegativity</div><div class="p-stat-val" id="p-en">—</div></div>
+        <div class="p-stat"><div class="p-stat-label">Boiling point</div><div class="p-stat-val" id="p-bp">—</div></div>
+        <div class="p-stat"><div class="p-stat-label">Melting point</div><div class="p-stat-val" id="p-mp">—</div></div>
+      </div>
     </div>
-    <div id="panel-sym"></div>
-    <button class="close-btn" id="close-panel">×</button>
+    <div id="panel-right">
+      <svg id="atom-diagram" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div>
+        <div id="element-image-wrap">
+          <img id="element-image" alt="Element photo" crossorigin="anonymous" />
+          <div id="element-image-placeholder">Loading image…</div>
+        </div>
+        <div id="image-caption"></div>
+      </div>
+    </div>
   </div>
-  <div id="panel-grid">
-    <div class="p-stat"><div class="p-stat-label">Atomic mass</div><div class="p-stat-val" id="p-mass">—</div></div>
-    <div class="p-stat"><div class="p-stat-label">Period / Group</div><div class="p-stat-val" id="p-pg">—</div></div>
-    <div class="p-stat"><div class="p-stat-label">Electron config</div><div class="p-stat-val" id="p-ec" style="font-size:12px">—</div></div>
-    <div class="p-stat"><div class="p-stat-label">Electronegativity</div><div class="p-stat-val" id="p-en">—</div></div>
-    <div class="p-stat"><div class="p-stat-label">Boiling point</div><div class="p-stat-val" id="p-bp">—</div></div>
-    <div class="p-stat"><div class="p-stat-label">Melting point</div><div class="p-stat-val" id="p-mp">—</div></div>
+</div>
+
+<!-- Compound modal -->
+<div id="compound-modal">
+  <div id="compound-box">
+    <button id="compound-close">×</button>
+    <h2>Compound prediction</h2>
+    <div id="compound-result"></div>
   </div>
 </div>
 
@@ -96,185 +227,450 @@ const CAT_LABELS={
   'halogen':'Halogens','noble-gas':'Noble gases','lanthanide':'Lanthanides','actinide':'Actinides'
 };
 
+// Valence electrons for each group / special cases
+const VALENCE={
+  1:1,2:2,3:3,4:4,5:3,6:2,7:1,8:0, // groups 13-18 mapped below
+  13:3,14:4,15:5,16:6,17:7,18:0
+};
+// Oxidation states for common elements
+const OXIDATION={
+  H:[1,-1],He:[0],Li:[1],Be:[2],B:[3],C:[4,2,-4],N:[3,-3,5],O:[-2,-1],F:[-1],Ne:[0],
+  Na:[1],Mg:[2],Al:[3],Si:[4,-4],P:[5,3,-3],S:[6,4,-2],Cl:[1,3,5,7,-1],Ar:[0],
+  K:[1],Ca:[2],Sc:[3],Ti:[4,3,2],V:[5,4,3,2],Cr:[6,3,2],Mn:[7,4,2,3],Fe:[3,2],
+  Co:[3,2],Ni:[2],Cu:[2,1],Zn:[2],Ga:[3],Ge:[4,2],As:[5,3,-3],Se:[6,4,-2],Br:[1,3,5,-1],Kr:[2,0],
+  Rb:[1],Sr:[2],Y:[3],Zr:[4],Nb:[5],Mo:[6],Ag:[1],Cd:[2],In:[3],Sn:[4,2],Sb:[5,3],Te:[6,-2],I:[1,3,5,7,-1],Xe:[2,4,6,8,0],
+  Cs:[1],Ba:[2],La:[3],Hf:[4],W:[6],Re:[7],Os:[4],Ir:[3,4],Pt:[4,2],Au:[3,1],Hg:[2,1],Tl:[3,1],Pb:[4,2],Bi:[3,5],
+  Fr:[1],Ra:[2],Ac:[3],U:[6,4],
+};
+
 const elements=[
-  {n:1,s:'H',name:'Hydrogen',cat:'nonmetal',period:1,group:1,mass:'1.008',ec:'1s¹',en:'2.20',bp:'-252.9°C',mp:'-259.1°C'},
-  {n:2,s:'He',name:'Helium',cat:'noble-gas',period:1,group:18,mass:'4.003',ec:'1s²',en:'—',bp:'-268.9°C',mp:'—'},
-  {n:3,s:'Li',name:'Lithium',cat:'alkali-metal',period:2,group:1,mass:'6.941',ec:'[He] 2s¹',en:'0.98',bp:'1342°C',mp:'180.5°C'},
-  {n:4,s:'Be',name:'Beryllium',cat:'alkaline-earth',period:2,group:2,mass:'9.012',ec:'[He] 2s²',en:'1.57',bp:'2469°C',mp:'1287°C'},
-  {n:5,s:'B',name:'Boron',cat:'metalloid',period:2,group:13,mass:'10.81',ec:'[He] 2s² 2p¹',en:'2.04',bp:'2076°C',mp:'2076°C'},
-  {n:6,s:'C',name:'Carbon',cat:'nonmetal',period:2,group:14,mass:'12.01',ec:'[He] 2s² 2p²',en:'2.55',bp:'3642°C',mp:'3500°C'},
-  {n:7,s:'N',name:'Nitrogen',cat:'nonmetal',period:2,group:15,mass:'14.01',ec:'[He] 2s² 2p³',en:'3.04',bp:'-195.8°C',mp:'-209.9°C'},
-  {n:8,s:'O',name:'Oxygen',cat:'nonmetal',period:2,group:16,mass:'16.00',ec:'[He] 2s² 2p⁴',en:'3.44',bp:'-182.9°C',mp:'-218.4°C'},
-  {n:9,s:'F',name:'Fluorine',cat:'halogen',period:2,group:17,mass:'19.00',ec:'[He] 2s² 2p⁵',en:'3.98',bp:'-188.1°C',mp:'-219.7°C'},
-  {n:10,s:'Ne',name:'Neon',cat:'noble-gas',period:2,group:18,mass:'20.18',ec:'[He] 2s² 2p⁶',en:'—',bp:'-246.1°C',mp:'-248.6°C'},
-  {n:11,s:'Na',name:'Sodium',cat:'alkali-metal',period:3,group:1,mass:'22.99',ec:'[Ne] 3s¹',en:'0.93',bp:'882.8°C',mp:'97.8°C'},
-  {n:12,s:'Mg',name:'Magnesium',cat:'alkaline-earth',period:3,group:2,mass:'24.31',ec:'[Ne] 3s²',en:'1.31',bp:'1090°C',mp:'650°C'},
-  {n:13,s:'Al',name:'Aluminum',cat:'post-transition',period:3,group:13,mass:'26.98',ec:'[Ne] 3s² 3p¹',en:'1.61',bp:'2519°C',mp:'660.3°C'},
-  {n:14,s:'Si',name:'Silicon',cat:'metalloid',period:3,group:14,mass:'28.09',ec:'[Ne] 3s² 3p²',en:'1.90',bp:'3265°C',mp:'1414°C'},
-  {n:15,s:'P',name:'Phosphorus',cat:'nonmetal',period:3,group:15,mass:'30.97',ec:'[Ne] 3s² 3p³',en:'2.19',bp:'280.5°C',mp:'44.2°C'},
-  {n:16,s:'S',name:'Sulfur',cat:'nonmetal',period:3,group:16,mass:'32.06',ec:'[Ne] 3s² 3p⁴',en:'2.58',bp:'444.7°C',mp:'113°C'},
-  {n:17,s:'Cl',name:'Chlorine',cat:'halogen',period:3,group:17,mass:'35.45',ec:'[Ne] 3s² 3p⁵',en:'3.16',bp:'-34.0°C',mp:'-101.5°C'},
-  {n:18,s:'Ar',name:'Argon',cat:'noble-gas',period:3,group:18,mass:'39.95',ec:'[Ne] 3s² 3p⁶',en:'—',bp:'-185.8°C',mp:'-189.4°C'},
-  {n:19,s:'K',name:'Potassium',cat:'alkali-metal',period:4,group:1,mass:'39.10',ec:'[Ar] 4s¹',en:'0.82',bp:'759°C',mp:'63.4°C'},
-  {n:20,s:'Ca',name:'Calcium',cat:'alkaline-earth',period:4,group:2,mass:'40.08',ec:'[Ar] 4s²',en:'1.00',bp:'1484°C',mp:'842°C'},
-  {n:21,s:'Sc',name:'Scandium',cat:'transition-metal',period:4,group:3,mass:'44.96',ec:'[Ar] 3d¹ 4s²',en:'1.36',bp:'2836°C',mp:'1541°C'},
-  {n:22,s:'Ti',name:'Titanium',cat:'transition-metal',period:4,group:4,mass:'47.87',ec:'[Ar] 3d² 4s²',en:'1.54',bp:'3287°C',mp:'1668°C'},
-  {n:23,s:'V',name:'Vanadium',cat:'transition-metal',period:4,group:5,mass:'50.94',ec:'[Ar] 3d³ 4s²',en:'1.63',bp:'3407°C',mp:'1910°C'},
-  {n:24,s:'Cr',name:'Chromium',cat:'transition-metal',period:4,group:6,mass:'52.00',ec:'[Ar] 3d⁵ 4s¹',en:'1.66',bp:'2671°C',mp:'1907°C'},
-  {n:25,s:'Mn',name:'Manganese',cat:'transition-metal',period:4,group:7,mass:'54.94',ec:'[Ar] 3d⁵ 4s²',en:'1.55',bp:'2061°C',mp:'1246°C'},
-  {n:26,s:'Fe',name:'Iron',cat:'transition-metal',period:4,group:8,mass:'55.85',ec:'[Ar] 3d⁶ 4s²',en:'1.83',bp:'2861°C',mp:'1538°C'},
-  {n:27,s:'Co',name:'Cobalt',cat:'transition-metal',period:4,group:9,mass:'58.93',ec:'[Ar] 3d⁷ 4s²',en:'1.88',bp:'2927°C',mp:'1495°C'},
-  {n:28,s:'Ni',name:'Nickel',cat:'transition-metal',period:4,group:10,mass:'58.69',ec:'[Ar] 3d⁸ 4s²',en:'1.91',bp:'2913°C',mp:'1455°C'},
-  {n:29,s:'Cu',name:'Copper',cat:'transition-metal',period:4,group:11,mass:'63.55',ec:'[Ar] 3d¹⁰ 4s¹',en:'1.90',bp:'2562°C',mp:'1084.6°C'},
-  {n:30,s:'Zn',name:'Zinc',cat:'transition-metal',period:4,group:12,mass:'65.38',ec:'[Ar] 3d¹⁰ 4s²',en:'1.65',bp:'907°C',mp:'419.5°C'},
-  {n:31,s:'Ga',name:'Gallium',cat:'post-transition',period:4,group:13,mass:'69.72',ec:'[Ar] 3d¹⁰ 4s² 4p¹',en:'1.81',bp:'2229°C',mp:'29.8°C'},
-  {n:32,s:'Ge',name:'Germanium',cat:'metalloid',period:4,group:14,mass:'72.63',ec:'[Ar] 3d¹⁰ 4s² 4p²',en:'2.01',bp:'2833°C',mp:'938.3°C'},
-  {n:33,s:'As',name:'Arsenic',cat:'metalloid',period:4,group:15,mass:'74.92',ec:'[Ar] 3d¹⁰ 4s² 4p³',en:'2.18',bp:'887°C',mp:'817°C'},
-  {n:34,s:'Se',name:'Selenium',cat:'nonmetal',period:4,group:16,mass:'78.97',ec:'[Ar] 3d¹⁰ 4s² 4p⁴',en:'2.55',bp:'685°C',mp:'221°C'},
-  {n:35,s:'Br',name:'Bromine',cat:'halogen',period:4,group:17,mass:'79.90',ec:'[Ar] 3d¹⁰ 4s² 4p⁵',en:'2.96',bp:'58.8°C',mp:'-7.2°C'},
-  {n:36,s:'Kr',name:'Krypton',cat:'noble-gas',period:4,group:18,mass:'83.80',ec:'[Ar] 3d¹⁰ 4s² 4p⁶',en:'3.00',bp:'-153.2°C',mp:'-157.4°C'},
-  {n:37,s:'Rb',name:'Rubidium',cat:'alkali-metal',period:5,group:1,mass:'85.47',ec:'[Kr] 5s¹',en:'0.82',bp:'688°C',mp:'39.3°C'},
-  {n:38,s:'Sr',name:'Strontium',cat:'alkaline-earth',period:5,group:2,mass:'87.62',ec:'[Kr] 5s²',en:'0.95',bp:'1382°C',mp:'777°C'},
-  {n:39,s:'Y',name:'Yttrium',cat:'transition-metal',period:5,group:3,mass:'88.91',ec:'[Kr] 4d¹ 5s²',en:'1.22',bp:'3345°C',mp:'1526°C'},
-  {n:40,s:'Zr',name:'Zirconium',cat:'transition-metal',period:5,group:4,mass:'91.22',ec:'[Kr] 4d² 5s²',en:'1.33',bp:'4406°C',mp:'1855°C'},
-  {n:41,s:'Nb',name:'Niobium',cat:'transition-metal',period:5,group:5,mass:'92.91',ec:'[Kr] 4d⁴ 5s¹',en:'1.60',bp:'4744°C',mp:'2477°C'},
-  {n:42,s:'Mo',name:'Molybdenum',cat:'transition-metal',period:5,group:6,mass:'95.96',ec:'[Kr] 4d⁵ 5s¹',en:'2.16',bp:'4639°C',mp:'2623°C'},
-  {n:43,s:'Tc',name:'Technetium',cat:'transition-metal',period:5,group:7,mass:'(97)',ec:'[Kr] 4d⁵ 5s²',en:'1.90',bp:'4265°C',mp:'2157°C'},
-  {n:44,s:'Ru',name:'Ruthenium',cat:'transition-metal',period:5,group:8,mass:'101.07',ec:'[Kr] 4d⁷ 5s¹',en:'2.20',bp:'4150°C',mp:'2334°C'},
-  {n:45,s:'Rh',name:'Rhodium',cat:'transition-metal',period:5,group:9,mass:'102.91',ec:'[Kr] 4d⁸ 5s¹',en:'2.28',bp:'3695°C',mp:'1964°C'},
-  {n:46,s:'Pd',name:'Palladium',cat:'transition-metal',period:5,group:10,mass:'106.42',ec:'[Kr] 4d¹⁰',en:'2.20',bp:'2963°C',mp:'1554.9°C'},
-  {n:47,s:'Ag',name:'Silver',cat:'transition-metal',period:5,group:11,mass:'107.87',ec:'[Kr] 4d¹⁰ 5s¹',en:'1.93',bp:'2162°C',mp:'961.8°C'},
-  {n:48,s:'Cd',name:'Cadmium',cat:'transition-metal',period:5,group:12,mass:'112.41',ec:'[Kr] 4d¹⁰ 5s²',en:'1.69',bp:'767°C',mp:'321.1°C'},
-  {n:49,s:'In',name:'Indium',cat:'post-transition',period:5,group:13,mass:'114.82',ec:'[Kr] 4d¹⁰ 5s² 5p¹',en:'1.78',bp:'2072°C',mp:'156.6°C'},
-  {n:50,s:'Sn',name:'Tin',cat:'post-transition',period:5,group:14,mass:'118.71',ec:'[Kr] 4d¹⁰ 5s² 5p²',en:'1.96',bp:'2602°C',mp:'231.9°C'},
-  {n:51,s:'Sb',name:'Antimony',cat:'metalloid',period:5,group:15,mass:'121.76',ec:'[Kr] 4d¹⁰ 5s² 5p³',en:'2.05',bp:'1587°C',mp:'630.6°C'},
-  {n:52,s:'Te',name:'Tellurium',cat:'metalloid',period:5,group:16,mass:'127.60',ec:'[Kr] 4d¹⁰ 5s² 5p⁴',en:'2.10',bp:'988°C',mp:'449.5°C'},
-  {n:53,s:'I',name:'Iodine',cat:'halogen',period:5,group:17,mass:'126.90',ec:'[Kr] 4d¹⁰ 5s² 5p⁵',en:'2.66',bp:'184.3°C',mp:'113.7°C'},
-  {n:54,s:'Xe',name:'Xenon',cat:'noble-gas',period:5,group:18,mass:'131.29',ec:'[Kr] 4d¹⁰ 5s² 5p⁶',en:'2.60',bp:'-108.1°C',mp:'-111.7°C'},
-  {n:55,s:'Cs',name:'Cesium',cat:'alkali-metal',period:6,group:1,mass:'132.91',ec:'[Xe] 6s¹',en:'0.79',bp:'671°C',mp:'28.4°C'},
-  {n:56,s:'Ba',name:'Barium',cat:'alkaline-earth',period:6,group:2,mass:'137.33',ec:'[Xe] 6s²',en:'0.89',bp:'1897°C',mp:'727°C'},
-  {n:57,s:'La',name:'Lanthanum',cat:'lanthanide',period:6,group:3,mass:'138.91',ec:'[Xe] 5d¹ 6s²',en:'1.10',bp:'3464°C',mp:'920°C'},
-  {n:58,s:'Ce',name:'Cerium',cat:'lanthanide',period:8,group:4,mass:'140.12',ec:'[Xe] 4f¹ 5d¹ 6s²',en:'1.12',bp:'3443°C',mp:'798°C'},
-  {n:59,s:'Pr',name:'Praseodymium',cat:'lanthanide',period:8,group:5,mass:'140.91',ec:'[Xe] 4f³ 6s²',en:'1.13',bp:'3520°C',mp:'931°C'},
-  {n:60,s:'Nd',name:'Neodymium',cat:'lanthanide',period:8,group:6,mass:'144.24',ec:'[Xe] 4f⁴ 6s²',en:'1.14',bp:'3074°C',mp:'1021°C'},
-  {n:61,s:'Pm',name:'Promethium',cat:'lanthanide',period:8,group:7,mass:'(145)',ec:'[Xe] 4f⁵ 6s²',en:'1.13',bp:'3000°C',mp:'1100°C'},
-  {n:62,s:'Sm',name:'Samarium',cat:'lanthanide',period:8,group:8,mass:'150.36',ec:'[Xe] 4f⁶ 6s²',en:'1.17',bp:'1794°C',mp:'1072°C'},
-  {n:63,s:'Eu',name:'Europium',cat:'lanthanide',period:8,group:9,mass:'151.96',ec:'[Xe] 4f⁷ 6s²',en:'1.20',bp:'1529°C',mp:'822°C'},
-  {n:64,s:'Gd',name:'Gadolinium',cat:'lanthanide',period:8,group:10,mass:'157.25',ec:'[Xe] 4f⁷ 5d¹ 6s²',en:'1.20',bp:'3273°C',mp:'1313°C'},
-  {n:65,s:'Tb',name:'Terbium',cat:'lanthanide',period:8,group:11,mass:'158.93',ec:'[Xe] 4f⁹ 6s²',en:'1.20',bp:'3230°C',mp:'1356°C'},
-  {n:66,s:'Dy',name:'Dysprosium',cat:'lanthanide',period:8,group:12,mass:'162.50',ec:'[Xe] 4f¹⁰ 6s²',en:'1.22',bp:'2567°C',mp:'1412°C'},
-  {n:67,s:'Ho',name:'Holmium',cat:'lanthanide',period:8,group:13,mass:'164.93',ec:'[Xe] 4f¹¹ 6s²',en:'1.23',bp:'2700°C',mp:'1474°C'},
-  {n:68,s:'Er',name:'Erbium',cat:'lanthanide',period:8,group:14,mass:'167.26',ec:'[Xe] 4f¹² 6s²',en:'1.24',bp:'2868°C',mp:'1529°C'},
-  {n:69,s:'Tm',name:'Thulium',cat:'lanthanide',period:8,group:15,mass:'168.93',ec:'[Xe] 4f¹³ 6s²',en:'1.25',bp:'1950°C',mp:'1545°C'},
-  {n:70,s:'Yb',name:'Ytterbium',cat:'lanthanide',period:8,group:16,mass:'173.04',ec:'[Xe] 4f¹⁴ 6s²',en:'1.10',bp:'1196°C',mp:'819°C'},
-  {n:71,s:'Lu',name:'Lutetium',cat:'lanthanide',period:8,group:17,mass:'174.97',ec:'[Xe] 4f¹⁴ 5d¹ 6s²',en:'1.27',bp:'3402°C',mp:'1663°C'},
-  {n:72,s:'Hf',name:'Hafnium',cat:'transition-metal',period:6,group:4,mass:'178.49',ec:'[Xe] 4f¹⁴ 5d² 6s²',en:'1.30',bp:'4600°C',mp:'2233°C'},
-  {n:73,s:'Ta',name:'Tantalum',cat:'transition-metal',period:6,group:5,mass:'180.95',ec:'[Xe] 4f¹⁴ 5d³ 6s²',en:'1.50',bp:'5458°C',mp:'3017°C'},
-  {n:74,s:'W',name:'Tungsten',cat:'transition-metal',period:6,group:6,mass:'183.84',ec:'[Xe] 4f¹⁴ 5d⁴ 6s²',en:'2.36',bp:'5555°C',mp:'3422°C'},
-  {n:75,s:'Re',name:'Rhenium',cat:'transition-metal',period:6,group:7,mass:'186.21',ec:'[Xe] 4f¹⁴ 5d⁵ 6s²',en:'1.90',bp:'5596°C',mp:'3186°C'},
-  {n:76,s:'Os',name:'Osmium',cat:'transition-metal',period:6,group:8,mass:'190.23',ec:'[Xe] 4f¹⁴ 5d⁶ 6s²',en:'2.20',bp:'5012°C',mp:'3033°C'},
-  {n:77,s:'Ir',name:'Iridium',cat:'transition-metal',period:6,group:9,mass:'192.22',ec:'[Xe] 4f¹⁴ 5d⁷ 6s²',en:'2.20',bp:'4428°C',mp:'2446°C'},
-  {n:78,s:'Pt',name:'Platinum',cat:'transition-metal',period:6,group:10,mass:'195.08',ec:'[Xe] 4f¹⁴ 5d⁹ 6s¹',en:'2.28',bp:'3825°C',mp:'1768.3°C'},
-  {n:79,s:'Au',name:'Gold',cat:'transition-metal',period:6,group:11,mass:'196.97',ec:'[Xe] 4f¹⁴ 5d¹⁰ 6s¹',en:'2.54',bp:'2856°C',mp:'1064.2°C'},
-  {n:80,s:'Hg',name:'Mercury',cat:'transition-metal',period:6,group:12,mass:'200.59',ec:'[Xe] 4f¹⁴ 5d¹⁰ 6s²',en:'2.00',bp:'356.7°C',mp:'-38.8°C'},
-  {n:81,s:'Tl',name:'Thallium',cat:'post-transition',period:6,group:13,mass:'204.38',ec:'[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p¹',en:'1.62',bp:'1473°C',mp:'304°C'},
-  {n:82,s:'Pb',name:'Lead',cat:'post-transition',period:6,group:14,mass:'207.2',ec:'[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²',en:'2.33',bp:'1749°C',mp:'327.5°C'},
-  {n:83,s:'Bi',name:'Bismuth',cat:'post-transition',period:6,group:15,mass:'208.98',ec:'[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p³',en:'2.02',bp:'1564°C',mp:'271.5°C'},
-  {n:84,s:'Po',name:'Polonium',cat:'post-transition',period:6,group:16,mass:'(209)',ec:'[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁴',en:'2.00',bp:'962°C',mp:'254°C'},
-  {n:85,s:'At',name:'Astatine',cat:'halogen',period:6,group:17,mass:'(210)',ec:'[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁵',en:'2.20',bp:'337°C',mp:'302°C'},
-  {n:86,s:'Rn',name:'Radon',cat:'noble-gas',period:6,group:18,mass:'(222)',ec:'[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶',en:'—',bp:'-61.7°C',mp:'-71.0°C'},
-  {n:87,s:'Fr',name:'Francium',cat:'alkali-metal',period:7,group:1,mass:'(223)',ec:'[Rn] 7s¹',en:'0.70',bp:'677°C',mp:'27°C'},
-  {n:88,s:'Ra',name:'Radium',cat:'alkaline-earth',period:7,group:2,mass:'(226)',ec:'[Rn] 7s²',en:'0.90',bp:'1737°C',mp:'700°C'},
-  {n:89,s:'Ac',name:'Actinium',cat:'actinide',period:7,group:3,mass:'(227)',ec:'[Rn] 6d¹ 7s²',en:'1.10',bp:'3198°C',mp:'1051°C'},
-  {n:90,s:'Th',name:'Thorium',cat:'actinide',period:9,group:4,mass:'232.04',ec:'[Rn] 6d² 7s²',en:'1.30',bp:'4820°C',mp:'1750°C'},
-  {n:91,s:'Pa',name:'Protactinium',cat:'actinide',period:9,group:5,mass:'231.04',ec:'[Rn] 5f² 6d¹ 7s²',en:'1.50',bp:'4000°C',mp:'1572°C'},
-  {n:92,s:'U',name:'Uranium',cat:'actinide',period:9,group:6,mass:'238.03',ec:'[Rn] 5f³ 6d¹ 7s²',en:'1.38',bp:'4131°C',mp:'1135°C'},
-  {n:93,s:'Np',name:'Neptunium',cat:'actinide',period:9,group:7,mass:'(237)',ec:'[Rn] 5f⁴ 6d¹ 7s²',en:'1.36',bp:'4000°C',mp:'644°C'},
-  {n:94,s:'Pu',name:'Plutonium',cat:'actinide',period:9,group:8,mass:'(244)',ec:'[Rn] 5f⁶ 7s²',en:'1.28',bp:'3228°C',mp:'640°C'},
-  {n:95,s:'Am',name:'Americium',cat:'actinide',period:9,group:9,mass:'(243)',ec:'[Rn] 5f⁷ 7s²',en:'1.30',bp:'2011°C',mp:'1176°C'},
-  {n:96,s:'Cm',name:'Curium',cat:'actinide',period:9,group:10,mass:'(247)',ec:'[Rn] 5f⁷ 6d¹ 7s²',en:'1.30',bp:'3110°C',mp:'1345°C'},
-  {n:97,s:'Bk',name:'Berkelium',cat:'actinide',period:9,group:11,mass:'(247)',ec:'[Rn] 5f⁹ 7s²',en:'1.30',bp:'2627°C',mp:'986°C'},
-  {n:98,s:'Cf',name:'Californium',cat:'actinide',period:9,group:12,mass:'(251)',ec:'[Rn] 5f¹⁰ 7s²',en:'1.30',bp:'1745°C',mp:'900°C'},
-  {n:99,s:'Es',name:'Einsteinium',cat:'actinide',period:9,group:13,mass:'(252)',ec:'[Rn] 5f¹¹ 7s²',en:'1.30',bp:'996°C',mp:'860°C'},
-  {n:100,s:'Fm',name:'Fermium',cat:'actinide',period:9,group:14,mass:'(257)',ec:'[Rn] 5f¹² 7s²',en:'1.30',bp:'—',mp:'1527°C'},
-  {n:101,s:'Md',name:'Mendelevium',cat:'actinide',period:9,group:15,mass:'(258)',ec:'[Rn] 5f¹³ 7s²',en:'1.30',bp:'—',mp:'827°C'},
-  {n:102,s:'No',name:'Nobelium',cat:'actinide',period:9,group:16,mass:'(259)',ec:'[Rn] 5f¹⁴ 7s²',en:'1.30',bp:'—',mp:'827°C'},
-  {n:103,s:'Lr',name:'Lawrencium',cat:'actinide',period:9,group:17,mass:'(262)',ec:'[Rn] 5f¹⁴ 7s² 7p¹',en:'1.30',bp:'—',mp:'1627°C'},
-  {n:104,s:'Rf',name:'Rutherfordium',cat:'transition-metal',period:7,group:4,mass:'(267)',ec:'[Rn] 5f¹⁴ 6d² 7s²',en:'—',bp:'5800°C',mp:'2400°C'},
-  {n:105,s:'Db',name:'Dubnium',cat:'transition-metal',period:7,group:5,mass:'(268)',ec:'[Rn] 5f¹⁴ 6d³ 7s²',en:'—',bp:'—',mp:'—'},
-  {n:106,s:'Sg',name:'Seaborgium',cat:'transition-metal',period:7,group:6,mass:'(271)',ec:'[Rn] 5f¹⁴ 6d⁴ 7s²',en:'—',bp:'—',mp:'—'},
-  {n:107,s:'Bh',name:'Bohrium',cat:'transition-metal',period:7,group:7,mass:'(272)',ec:'[Rn] 5f¹⁴ 6d⁵ 7s²',en:'—',bp:'—',mp:'—'},
-  {n:108,s:'Hs',name:'Hassium',cat:'transition-metal',period:7,group:8,mass:'(270)',ec:'[Rn] 5f¹⁴ 6d⁶ 7s²',en:'—',bp:'—',mp:'—'},
-  {n:109,s:'Mt',name:'Meitnerium',cat:'transition-metal',period:7,group:9,mass:'(276)',ec:'[Rn] 5f¹⁴ 6d⁷ 7s²',en:'—',bp:'—',mp:'—'},
-  {n:110,s:'Ds',name:'Darmstadtium',cat:'transition-metal',period:7,group:10,mass:'(281)',ec:'[Rn] 5f¹⁴ 6d⁸ 7s²',en:'—',bp:'—',mp:'—'},
-  {n:111,s:'Rg',name:'Roentgenium',cat:'transition-metal',period:7,group:11,mass:'(280)',ec:'[Rn] 5f¹⁴ 6d⁹ 7s²',en:'—',bp:'—',mp:'—'},
-  {n:112,s:'Cn',name:'Copernicium',cat:'transition-metal',period:7,group:12,mass:'(285)',ec:'[Rn] 5f¹⁴ 6d¹⁰ 7s²',en:'—',bp:'—',mp:'—'},
-  {n:113,s:'Nh',name:'Nihonium',cat:'post-transition',period:7,group:13,mass:'(284)',ec:'[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p¹',en:'—',bp:'—',mp:'—'},
-  {n:114,s:'Fl',name:'Flerovium',cat:'post-transition',period:7,group:14,mass:'(289)',ec:'[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p²',en:'—',bp:'—',mp:'—'},
-  {n:115,s:'Mc',name:'Moscovium',cat:'post-transition',period:7,group:15,mass:'(288)',ec:'[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p³',en:'—',bp:'—',mp:'—'},
-  {n:116,s:'Lv',name:'Livermorium',cat:'post-transition',period:7,group:16,mass:'(293)',ec:'[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁴',en:'—',bp:'—',mp:'—'},
-  {n:117,s:'Ts',name:'Tennessine',cat:'halogen',period:7,group:17,mass:'(294)',ec:'[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵',en:'—',bp:'—',mp:'—'},
-  {n:118,s:'Og',name:'Oganesson',cat:'noble-gas',period:7,group:18,mass:'(294)',ec:'[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶',en:'—',bp:'—',mp:'—'},
+  {n:1,s:'H',name:'Hydrogen',cat:'nonmetal',period:1,group:1,mass:'1.008',ec:'1s¹',en:2.20,bp:'-252.9°C',mp:'-259.1°C'},
+  {n:2,s:'He',name:'Helium',cat:'noble-gas',period:1,group:18,mass:'4.003',ec:'1s²',en:null,bp:'-268.9°C',mp:'—'},
+  {n:3,s:'Li',name:'Lithium',cat:'alkali-metal',period:2,group:1,mass:'6.941',ec:'[He] 2s¹',en:0.98,bp:'1342°C',mp:'180.5°C'},
+  {n:4,s:'Be',name:'Beryllium',cat:'alkaline-earth',period:2,group:2,mass:'9.012',ec:'[He] 2s²',en:1.57,bp:'2469°C',mp:'1287°C'},
+  {n:5,s:'B',name:'Boron',cat:'metalloid',period:2,group:13,mass:'10.81',ec:'[He] 2s² 2p¹',en:2.04,bp:'2076°C',mp:'2076°C'},
+  {n:6,s:'C',name:'Carbon',cat:'nonmetal',period:2,group:14,mass:'12.01',ec:'[He] 2s² 2p²',en:2.55,bp:'3642°C',mp:'3500°C'},
+  {n:7,s:'N',name:'Nitrogen',cat:'nonmetal',period:2,group:15,mass:'14.01',ec:'[He] 2s² 2p³',en:3.04,bp:'-195.8°C',mp:'-209.9°C'},
+  {n:8,s:'O',name:'Oxygen',cat:'nonmetal',period:2,group:16,mass:'16.00',ec:'[He] 2s² 2p⁴',en:3.44,bp:'-182.9°C',mp:'-218.4°C'},
+  {n:9,s:'F',name:'Fluorine',cat:'halogen',period:2,group:17,mass:'19.00',ec:'[He] 2s² 2p⁵',en:3.98,bp:'-188.1°C',mp:'-219.7°C'},
+  {n:10,s:'Ne',name:'Neon',cat:'noble-gas',period:2,group:18,mass:'20.18',ec:'[He] 2s² 2p⁶',en:null,bp:'-246.1°C',mp:'-248.6°C'},
+  {n:11,s:'Na',name:'Sodium',cat:'alkali-metal',period:3,group:1,mass:'22.99',ec:'[Ne] 3s¹',en:0.93,bp:'882.8°C',mp:'97.8°C'},
+  {n:12,s:'Mg',name:'Magnesium',cat:'alkaline-earth',period:3,group:2,mass:'24.31',ec:'[Ne] 3s²',en:1.31,bp:'1090°C',mp:'650°C'},
+  {n:13,s:'Al',name:'Aluminum',cat:'post-transition',period:3,group:13,mass:'26.98',ec:'[Ne] 3s² 3p¹',en:1.61,bp:'2519°C',mp:'660.3°C'},
+  {n:14,s:'Si',name:'Silicon',cat:'metalloid',period:3,group:14,mass:'28.09',ec:'[Ne] 3s² 3p²',en:1.90,bp:'3265°C',mp:'1414°C'},
+  {n:15,s:'P',name:'Phosphorus',cat:'nonmetal',period:3,group:15,mass:'30.97',ec:'[Ne] 3s² 3p³',en:2.19,bp:'280.5°C',mp:'44.2°C'},
+  {n:16,s:'S',name:'Sulfur',cat:'nonmetal',period:3,group:16,mass:'32.06',ec:'[Ne] 3s² 3p⁴',en:2.58,bp:'444.7°C',mp:'113°C'},
+  {n:17,s:'Cl',name:'Chlorine',cat:'halogen',period:3,group:17,mass:'35.45',ec:'[Ne] 3s² 3p⁵',en:3.16,bp:'-34.0°C',mp:'-101.5°C'},
+  {n:18,s:'Ar',name:'Argon',cat:'noble-gas',period:3,group:18,mass:'39.95',ec:'[Ne] 3s² 3p⁶',en:null,bp:'-185.8°C',mp:'-189.4°C'},
+  {n:19,s:'K',name:'Potassium',cat:'alkali-metal',period:4,group:1,mass:'39.10',ec:'[Ar] 4s¹',en:0.82,bp:'759°C',mp:'63.4°C'},
+  {n:20,s:'Ca',name:'Calcium',cat:'alkaline-earth',period:4,group:2,mass:'40.08',ec:'[Ar] 4s²',en:1.00,bp:'1484°C',mp:'842°C'},
+  {n:21,s:'Sc',name:'Scandium',cat:'transition-metal',period:4,group:3,mass:'44.96',ec:'[Ar] 3d¹ 4s²',en:1.36,bp:'2836°C',mp:'1541°C'},
+  {n:22,s:'Ti',name:'Titanium',cat:'transition-metal',period:4,group:4,mass:'47.87',ec:'[Ar] 3d² 4s²',en:1.54,bp:'3287°C',mp:'1668°C'},
+  {n:23,s:'V',name:'Vanadium',cat:'transition-metal',period:4,group:5,mass:'50.94',ec:'[Ar] 3d³ 4s²',en:1.63,bp:'3407°C',mp:'1910°C'},
+  {n:24,s:'Cr',name:'Chromium',cat:'transition-metal',period:4,group:6,mass:'52.00',ec:'[Ar] 3d⁵ 4s¹',en:1.66,bp:'2671°C',mp:'1907°C'},
+  {n:25,s:'Mn',name:'Manganese',cat:'transition-metal',period:4,group:7,mass:'54.94',ec:'[Ar] 3d⁵ 4s²',en:1.55,bp:'2061°C',mp:'1246°C'},
+  {n:26,s:'Fe',name:'Iron',cat:'transition-metal',period:4,group:8,mass:'55.85',ec:'[Ar] 3d⁶ 4s²',en:1.83,bp:'2861°C',mp:'1538°C'},
+  {n:27,s:'Co',name:'Cobalt',cat:'transition-metal',period:4,group:9,mass:'58.93',ec:'[Ar] 3d⁷ 4s²',en:1.88,bp:'2927°C',mp:'1495°C'},
+  {n:28,s:'Ni',name:'Nickel',cat:'transition-metal',period:4,group:10,mass:'58.69',ec:'[Ar] 3d⁸ 4s²',en:1.91,bp:'2913°C',mp:'1455°C'},
+  {n:29,s:'Cu',name:'Copper',cat:'transition-metal',period:4,group:11,mass:'63.55',ec:'[Ar] 3d¹⁰ 4s¹',en:1.90,bp:'2562°C',mp:'1084.6°C'},
+  {n:30,s:'Zn',name:'Zinc',cat:'transition-metal',period:4,group:12,mass:'65.38',ec:'[Ar] 3d¹⁰ 4s²',en:1.65,bp:'907°C',mp:'419.5°C'},
+  {n:31,s:'Ga',name:'Gallium',cat:'post-transition',period:4,group:13,mass:'69.72',ec:'[Ar] 3d¹⁰ 4s² 4p¹',en:1.81,bp:'2229°C',mp:'29.8°C'},
+  {n:32,s:'Ge',name:'Germanium',cat:'metalloid',period:4,group:14,mass:'72.63',ec:'[Ar] 3d¹⁰ 4s² 4p²',en:2.01,bp:'2833°C',mp:'938.3°C'},
+  {n:33,s:'As',name:'Arsenic',cat:'metalloid',period:4,group:15,mass:'74.92',ec:'[Ar] 3d¹⁰ 4s² 4p³',en:2.18,bp:'887°C',mp:'817°C'},
+  {n:34,s:'Se',name:'Selenium',cat:'nonmetal',period:4,group:16,mass:'78.97',ec:'[Ar] 3d¹⁰ 4s² 4p⁴',en:2.55,bp:'685°C',mp:'221°C'},
+  {n:35,s:'Br',name:'Bromine',cat:'halogen',period:4,group:17,mass:'79.90',ec:'[Ar] 3d¹⁰ 4s² 4p⁵',en:2.96,bp:'58.8°C',mp:'-7.2°C'},
+  {n:36,s:'Kr',name:'Krypton',cat:'noble-gas',period:4,group:18,mass:'83.80',ec:'[Ar] 3d¹⁰ 4s² 4p⁶',en:3.00,bp:'-153.2°C',mp:'-157.4°C'},
+  {n:37,s:'Rb',name:'Rubidium',cat:'alkali-metal',period:5,group:1,mass:'85.47',ec:'[Kr] 5s¹',en:0.82,bp:'688°C',mp:'39.3°C'},
+  {n:38,s:'Sr',name:'Strontium',cat:'alkaline-earth',period:5,group:2,mass:'87.62',ec:'[Kr] 5s²',en:0.95,bp:'1382°C',mp:'777°C'},
+  {n:39,s:'Y',name:'Yttrium',cat:'transition-metal',period:5,group:3,mass:'88.91',ec:'[Kr] 4d¹ 5s²',en:1.22,bp:'3345°C',mp:'1526°C'},
+  {n:40,s:'Zr',name:'Zirconium',cat:'transition-metal',period:5,group:4,mass:'91.22',ec:'[Kr] 4d² 5s²',en:1.33,bp:'4406°C',mp:'1855°C'},
+  {n:41,s:'Nb',name:'Niobium',cat:'transition-metal',period:5,group:5,mass:'92.91',ec:'[Kr] 4d⁴ 5s¹',en:1.60,bp:'4744°C',mp:'2477°C'},
+  {n:42,s:'Mo',name:'Molybdenum',cat:'transition-metal',period:5,group:6,mass:'95.96',ec:'[Kr] 4d⁵ 5s¹',en:2.16,bp:'4639°C',mp:'2623°C'},
+  {n:43,s:'Tc',name:'Technetium',cat:'transition-metal',period:5,group:7,mass:'(97)',ec:'[Kr] 4d⁵ 5s²',en:1.90,bp:'4265°C',mp:'2157°C'},
+  {n:44,s:'Ru',name:'Ruthenium',cat:'transition-metal',period:5,group:8,mass:'101.07',ec:'[Kr] 4d⁷ 5s¹',en:2.20,bp:'4150°C',mp:'2334°C'},
+  {n:45,s:'Rh',name:'Rhodium',cat:'transition-metal',period:5,group:9,mass:'102.91',ec:'[Kr] 4d⁸ 5s¹',en:2.28,bp:'3695°C',mp:'1964°C'},
+  {n:46,s:'Pd',name:'Palladium',cat:'transition-metal',period:5,group:10,mass:'106.42',ec:'[Kr] 4d¹⁰',en:2.20,bp:'2963°C',mp:'1554.9°C'},
+  {n:47,s:'Ag',name:'Silver',cat:'transition-metal',period:5,group:11,mass:'107.87',ec:'[Kr] 4d¹⁰ 5s¹',en:1.93,bp:'2162°C',mp:'961.8°C'},
+  {n:48,s:'Cd',name:'Cadmium',cat:'transition-metal',period:5,group:12,mass:'112.41',ec:'[Kr] 4d¹⁰ 5s²',en:1.69,bp:'767°C',mp:'321.1°C'},
+  {n:49,s:'In',name:'Indium',cat:'post-transition',period:5,group:13,mass:'114.82',ec:'[Kr] 4d¹⁰ 5s² 5p¹',en:1.78,bp:'2072°C',mp:'156.6°C'},
+  {n:50,s:'Sn',name:'Tin',cat:'post-transition',period:5,group:14,mass:'118.71',ec:'[Kr] 4d¹⁰ 5s² 5p²',en:1.96,bp:'2602°C',mp:'231.9°C'},
+  {n:51,s:'Sb',name:'Antimony',cat:'metalloid',period:5,group:15,mass:'121.76',ec:'[Kr] 4d¹⁰ 5s² 5p³',en:2.05,bp:'1587°C',mp:'630.6°C'},
+  {n:52,s:'Te',name:'Tellurium',cat:'metalloid',period:5,group:16,mass:'127.60',ec:'[Kr] 4d¹⁰ 5s² 5p⁴',en:2.10,bp:'988°C',mp:'449.5°C'},
+  {n:53,s:'I',name:'Iodine',cat:'halogen',period:5,group:17,mass:'126.90',ec:'[Kr] 4d¹⁰ 5s² 5p⁵',en:2.66,bp:'184.3°C',mp:'113.7°C'},
+  {n:54,s:'Xe',name:'Xenon',cat:'noble-gas',period:5,group:18,mass:'131.29',ec:'[Kr] 4d¹⁰ 5s² 5p⁶',en:2.60,bp:'-108.1°C',mp:'-111.7°C'},
+  {n:55,s:'Cs',name:'Cesium',cat:'alkali-metal',period:6,group:1,mass:'132.91',ec:'[Xe] 6s¹',en:0.79,bp:'671°C',mp:'28.4°C'},
+  {n:56,s:'Ba',name:'Barium',cat:'alkaline-earth',period:6,group:2,mass:'137.33',ec:'[Xe] 6s²',en:0.89,bp:'1897°C',mp:'727°C'},
+  {n:57,s:'La',name:'Lanthanum',cat:'lanthanide',period:6,group:3,mass:'138.91',ec:'[Xe] 5d¹ 6s²',en:1.10,bp:'3464°C',mp:'920°C'},
+  {n:58,s:'Ce',name:'Cerium',cat:'lanthanide',period:8,group:4,mass:'140.12',ec:'[Xe] 4f¹ 5d¹ 6s²',en:1.12,bp:'3443°C',mp:'798°C'},
+  {n:59,s:'Pr',name:'Praseodymium',cat:'lanthanide',period:8,group:5,mass:'140.91',ec:'[Xe] 4f³ 6s²',en:1.13,bp:'3520°C',mp:'931°C'},
+  {n:60,s:'Nd',name:'Neodymium',cat:'lanthanide',period:8,group:6,mass:'144.24',ec:'[Xe] 4f⁴ 6s²',en:1.14,bp:'3074°C',mp:'1021°C'},
+  {n:61,s:'Pm',name:'Promethium',cat:'lanthanide',period:8,group:7,mass:'(145)',ec:'[Xe] 4f⁵ 6s²',en:1.13,bp:'3000°C',mp:'1100°C'},
+  {n:62,s:'Sm',name:'Samarium',cat:'lanthanide',period:8,group:8,mass:'150.36',ec:'[Xe] 4f⁶ 6s²',en:1.17,bp:'1794°C',mp:'1072°C'},
+  {n:63,s:'Eu',name:'Europium',cat:'lanthanide',period:8,group:9,mass:'151.96',ec:'[Xe] 4f⁷ 6s²',en:1.20,bp:'1529°C',mp:'822°C'},
+  {n:64,s:'Gd',name:'Gadolinium',cat:'lanthanide',period:8,group:10,mass:'157.25',ec:'[Xe] 4f⁷ 5d¹ 6s²',en:1.20,bp:'3273°C',mp:'1313°C'},
+  {n:65,s:'Tb',name:'Terbium',cat:'lanthanide',period:8,group:11,mass:'158.93',ec:'[Xe] 4f⁹ 6s²',en:1.20,bp:'3230°C',mp:'1356°C'},
+  {n:66,s:'Dy',name:'Dysprosium',cat:'lanthanide',period:8,group:12,mass:'162.50',ec:'[Xe] 4f¹⁰ 6s²',en:1.22,bp:'2567°C',mp:'1412°C'},
+  {n:67,s:'Ho',name:'Holmium',cat:'lanthanide',period:8,group:13,mass:'164.93',ec:'[Xe] 4f¹¹ 6s²',en:1.23,bp:'2700°C',mp:'1474°C'},
+  {n:68,s:'Er',name:'Erbium',cat:'lanthanide',period:8,group:14,mass:'167.26',ec:'[Xe] 4f¹² 6s²',en:1.24,bp:'2868°C',mp:'1529°C'},
+  {n:69,s:'Tm',name:'Thulium',cat:'lanthanide',period:8,group:15,mass:'168.93',ec:'[Xe] 4f¹³ 6s²',en:1.25,bp:'1950°C',mp:'1545°C'},
+  {n:70,s:'Yb',name:'Ytterbium',cat:'lanthanide',period:8,group:16,mass:'173.04',ec:'[Xe] 4f¹⁴ 6s²',en:1.10,bp:'1196°C',mp:'819°C'},
+  {n:71,s:'Lu',name:'Lutetium',cat:'lanthanide',period:8,group:17,mass:'174.97',ec:'[Xe] 4f¹⁴ 5d¹ 6s²',en:1.27,bp:'3402°C',mp:'1663°C'},
+  {n:72,s:'Hf',name:'Hafnium',cat:'transition-metal',period:6,group:4,mass:'178.49',ec:'[Xe] 4f¹⁴ 5d² 6s²',en:1.30,bp:'4600°C',mp:'2233°C'},
+  {n:73,s:'Ta',name:'Tantalum',cat:'transition-metal',period:6,group:5,mass:'180.95',ec:'[Xe] 4f¹⁴ 5d³ 6s²',en:1.50,bp:'5458°C',mp:'3017°C'},
+  {n:74,s:'W',name:'Tungsten',cat:'transition-metal',period:6,group:6,mass:'183.84',ec:'[Xe] 4f¹⁴ 5d⁴ 6s²',en:2.36,bp:'5555°C',mp:'3422°C'},
+  {n:75,s:'Re',name:'Rhenium',cat:'transition-metal',period:6,group:7,mass:'186.21',ec:'[Xe] 4f¹⁴ 5d⁵ 6s²',en:1.90,bp:'5596°C',mp:'3186°C'},
+  {n:76,s:'Os',name:'Osmium',cat:'transition-metal',period:6,group:8,mass:'190.23',ec:'[Xe] 4f¹⁴ 5d⁶ 6s²',en:2.20,bp:'5012°C',mp:'3033°C'},
+  {n:77,s:'Ir',name:'Iridium',cat:'transition-metal',period:6,group:9,mass:'192.22',ec:'[Xe] 4f¹⁴ 5d⁷ 6s²',en:2.20,bp:'4428°C',mp:'2446°C'},
+  {n:78,s:'Pt',name:'Platinum',cat:'transition-metal',period:6,group:10,mass:'195.08',ec:'[Xe] 4f¹⁴ 5d⁹ 6s¹',en:2.28,bp:'3825°C',mp:'1768.3°C'},
+  {n:79,s:'Au',name:'Gold',cat:'transition-metal',period:6,group:11,mass:'196.97',ec:'[Xe] 4f¹⁴ 5d¹⁰ 6s¹',en:2.54,bp:'2856°C',mp:'1064.2°C'},
+  {n:80,s:'Hg',name:'Mercury',cat:'transition-metal',period:6,group:12,mass:'200.59',ec:'[Xe] 4f¹⁴ 5d¹⁰ 6s²',en:2.00,bp:'356.7°C',mp:'-38.8°C'},
+  {n:81,s:'Tl',name:'Thallium',cat:'post-transition',period:6,group:13,mass:'204.38',ec:'[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p¹',en:1.62,bp:'1473°C',mp:'304°C'},
+  {n:82,s:'Pb',name:'Lead',cat:'post-transition',period:6,group:14,mass:'207.2',ec:'[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²',en:2.33,bp:'1749°C',mp:'327.5°C'},
+  {n:83,s:'Bi',name:'Bismuth',cat:'post-transition',period:6,group:15,mass:'208.98',ec:'[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p³',en:2.02,bp:'1564°C',mp:'271.5°C'},
+  {n:84,s:'Po',name:'Polonium',cat:'post-transition',period:6,group:16,mass:'(209)',ec:'[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁴',en:2.00,bp:'962°C',mp:'254°C'},
+  {n:85,s:'At',name:'Astatine',cat:'halogen',period:6,group:17,mass:'(210)',ec:'[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁵',en:2.20,bp:'337°C',mp:'302°C'},
+  {n:86,s:'Rn',name:'Radon',cat:'noble-gas',period:6,group:18,mass:'(222)',ec:'[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶',en:null,bp:'-61.7°C',mp:'-71.0°C'},
+  {n:87,s:'Fr',name:'Francium',cat:'alkali-metal',period:7,group:1,mass:'(223)',ec:'[Rn] 7s¹',en:0.70,bp:'677°C',mp:'27°C'},
+  {n:88,s:'Ra',name:'Radium',cat:'alkaline-earth',period:7,group:2,mass:'(226)',ec:'[Rn] 7s²',en:0.90,bp:'1737°C',mp:'700°C'},
+  {n:89,s:'Ac',name:'Actinium',cat:'actinide',period:7,group:3,mass:'(227)',ec:'[Rn] 6d¹ 7s²',en:1.10,bp:'3198°C',mp:'1051°C'},
+  {n:90,s:'Th',name:'Thorium',cat:'actinide',period:9,group:4,mass:'232.04',ec:'[Rn] 6d² 7s²',en:1.30,bp:'4820°C',mp:'1750°C'},
+  {n:91,s:'Pa',name:'Protactinium',cat:'actinide',period:9,group:5,mass:'231.04',ec:'[Rn] 5f² 6d¹ 7s²',en:1.50,bp:'4000°C',mp:'1572°C'},
+  {n:92,s:'U',name:'Uranium',cat:'actinide',period:9,group:6,mass:'238.03',ec:'[Rn] 5f³ 6d¹ 7s²',en:1.38,bp:'4131°C',mp:'1135°C'},
+  {n:93,s:'Np',name:'Neptunium',cat:'actinide',period:9,group:7,mass:'(237)',ec:'[Rn] 5f⁴ 6d¹ 7s²',en:1.36,bp:'4000°C',mp:'644°C'},
+  {n:94,s:'Pu',name:'Plutonium',cat:'actinide',period:9,group:8,mass:'(244)',ec:'[Rn] 5f⁶ 7s²',en:1.28,bp:'3228°C',mp:'640°C'},
+  {n:95,s:'Am',name:'Americium',cat:'actinide',period:9,group:9,mass:'(243)',ec:'[Rn] 5f⁷ 7s²',en:1.30,bp:'2011°C',mp:'1176°C'},
+  {n:96,s:'Cm',name:'Curium',cat:'actinide',period:9,group:10,mass:'(247)',ec:'[Rn] 5f⁷ 6d¹ 7s²',en:1.30,bp:'3110°C',mp:'1345°C'},
+  {n:97,s:'Bk',name:'Berkelium',cat:'actinide',period:9,group:11,mass:'(247)',ec:'[Rn] 5f⁹ 7s²',en:1.30,bp:'2627°C',mp:'986°C'},
+  {n:98,s:'Cf',name:'Californium',cat:'actinide',period:9,group:12,mass:'(251)',ec:'[Rn] 5f¹⁰ 7s²',en:1.30,bp:'1745°C',mp:'900°C'},
+  {n:99,s:'Es',name:'Einsteinium',cat:'actinide',period:9,group:13,mass:'(252)',ec:'[Rn] 5f¹¹ 7s²',en:1.30,bp:'996°C',mp:'860°C'},
+  {n:100,s:'Fm',name:'Fermium',cat:'actinide',period:9,group:14,mass:'(257)',ec:'[Rn] 5f¹² 7s²',en:1.30,bp:'—',mp:'1527°C'},
+  {n:101,s:'Md',name:'Mendelevium',cat:'actinide',period:9,group:15,mass:'(258)',ec:'[Rn] 5f¹³ 7s²',en:1.30,bp:'—',mp:'827°C'},
+  {n:102,s:'No',name:'Nobelium',cat:'actinide',period:9,group:16,mass:'(259)',ec:'[Rn] 5f¹⁴ 7s²',en:1.30,bp:'—',mp:'827°C'},
+  {n:103,s:'Lr',name:'Lawrencium',cat:'actinide',period:9,group:17,mass:'(262)',ec:'[Rn] 5f¹⁴ 7s² 7p¹',en:1.30,bp:'—',mp:'1627°C'},
+  {n:104,s:'Rf',name:'Rutherfordium',cat:'transition-metal',period:7,group:4,mass:'(267)',ec:'[Rn] 5f¹⁴ 6d² 7s²',en:null,bp:'5800°C',mp:'2400°C'},
+  {n:105,s:'Db',name:'Dubnium',cat:'transition-metal',period:7,group:5,mass:'(268)',ec:'[Rn] 5f¹⁴ 6d³ 7s²',en:null,bp:'—',mp:'—'},
+  {n:106,s:'Sg',name:'Seaborgium',cat:'transition-metal',period:7,group:6,mass:'(271)',ec:'[Rn] 5f¹⁴ 6d⁴ 7s²',en:null,bp:'—',mp:'—'},
+  {n:107,s:'Bh',name:'Bohrium',cat:'transition-metal',period:7,group:7,mass:'(272)',ec:'[Rn] 5f¹⁴ 6d⁵ 7s²',en:null,bp:'—',mp:'—'},
+  {n:108,s:'Hs',name:'Hassium',cat:'transition-metal',period:7,group:8,mass:'(270)',ec:'[Rn] 5f¹⁴ 6d⁶ 7s²',en:null,bp:'—',mp:'—'},
+  {n:109,s:'Mt',name:'Meitnerium',cat:'transition-metal',period:7,group:9,mass:'(276)',ec:'[Rn] 5f¹⁴ 6d⁷ 7s²',en:null,bp:'—',mp:'—'},
+  {n:110,s:'Ds',name:'Darmstadtium',cat:'transition-metal',period:7,group:10,mass:'(281)',ec:'[Rn] 5f¹⁴ 6d⁸ 7s²',en:null,bp:'—',mp:'—'},
+  {n:111,s:'Rg',name:'Roentgenium',cat:'transition-metal',period:7,group:11,mass:'(280)',ec:'[Rn] 5f¹⁴ 6d⁹ 7s²',en:null,bp:'—',mp:'—'},
+  {n:112,s:'Cn',name:'Copernicium',cat:'transition-metal',period:7,group:12,mass:'(285)',ec:'[Rn] 5f¹⁴ 6d¹⁰ 7s²',en:null,bp:'—',mp:'—'},
+  {n:113,s:'Nh',name:'Nihonium',cat:'post-transition',period:7,group:13,mass:'(284)',ec:'[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p¹',en:null,bp:'—',mp:'—'},
+  {n:114,s:'Fl',name:'Flerovium',cat:'post-transition',period:7,group:14,mass:'(289)',ec:'[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p²',en:null,bp:'—',mp:'—'},
+  {n:115,s:'Mc',name:'Moscovium',cat:'post-transition',period:7,group:15,mass:'(288)',ec:'[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p³',en:null,bp:'—',mp:'—'},
+  {n:116,s:'Lv',name:'Livermorium',cat:'post-transition',period:7,group:16,mass:'(293)',ec:'[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁴',en:null,bp:'—',mp:'—'},
+  {n:117,s:'Ts',name:'Tennessine',cat:'halogen',period:7,group:17,mass:'(294)',ec:'[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵',en:null,bp:'—',mp:'—'},
+  {n:118,s:'Og',name:'Oganesson',cat:'noble-gas',period:7,group:18,mass:'(294)',ec:'[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶',en:null,bp:'—',mp:'—'},
 ];
 
-function getRow(el){
-  if(el.period===8)return 9;
-  if(el.period===9)return 10;
-  return el.period;
+// ─── Electrons per shell (Bohr model) ───────────────────────
+function shellFill(atomicNum){
+  const shells=[2,8,18,32,18,8,2];
+  let rem=atomicNum;
+  const res=[];
+  for(let c of shells){
+    if(rem<=0)break;
+    const take=Math.min(rem,c);
+    res.push(take);
+    rem-=take;
+  }
+  return res;
 }
 
-function makeGrid(){
-  const grid=document.getElementById('pt-grid');
-  const byPos={};
-  elements.forEach(el=>{
-    byPos[`${getRow(el)}-${el.group}`]=el;
-  });
-  for(let r=1;r<=10;r++){
-    if(r===9||r===10){
-      const lbl=document.createElement('div');
-      lbl.className='lbl';
-      lbl.style.cssText='grid-column:1/3;grid-row:'+r;
-      lbl.textContent=r===9?'Lanthanides →':'Actinides →';
-      grid.appendChild(lbl);
-      for(let c=3;c<=18;c++){
-        const el=byPos[`${r}-${c}`];
-        const div=document.createElement('div');
-        div.style.cssText=`grid-column:${c};grid-row:${r}`;
-        if(el){
-          div.className='cell';
-          div.dataset.cat=el.cat;
-          div.style.background=CAT_COLORS[el.cat];
-          div.style.color=CAT_TEXT[el.cat];
-          div.innerHTML=`<span class="num">${el.n}</span><span class="sym">${el.s}</span>`;
-          div.title=el.name;
-          div.addEventListener('click',()=>showPanel(el));
-        }else{
-          div.className='cell empty';
-        }
-        grid.appendChild(div);
-      }
-    } else {
-      for(let c=1;c<=18;c++){
-        const el=byPos[`${r}-${c}`];
-        const div=document.createElement('div');
-        div.style.cssText=`grid-column:${c};grid-row:${r}`;
-        if(el){
-          div.className='cell';
-          div.dataset.cat=el.cat;
-          div.style.background=CAT_COLORS[el.cat];
-          div.style.color=CAT_TEXT[el.cat];
-          div.innerHTML=`<span class="num">${el.n}</span><span class="sym">${el.s}</span>`;
-          div.title=el.name;
-          div.addEventListener('click',()=>showPanel(el));
-        }else{
-          div.className='cell empty';
-        }
-        grid.appendChild(div);
-      }
+// ─── Animated Bohr atom SVG ──────────────────────────────────
+function drawAtom(el){
+  const svg=document.getElementById('atom-diagram');
+  svg.innerHTML='';
+  const ns='http://www.w3.org/2000/svg';
+  const cx=110,cy=110;
+  const shells=shellFill(el.n);
+  const neutrons=Math.round(parseFloat(el.mass)||el.n);
+  const protons=el.n;
+  const catColor=CAT_COLORS[el.cat];
+  const catTxt=CAT_TEXT[el.cat];
+
+  // nucleus
+  const nucR=shells.length<=2?14:shells.length<=4?17:20;
+  const nuc=document.createElementNS(ns,'circle');
+  nuc.setAttribute('cx',cx);nuc.setAttribute('cy',cy);
+  nuc.setAttribute('r',nucR);
+  nuc.setAttribute('fill',catColor);
+  nuc.setAttribute('stroke',catTxt);
+  nuc.setAttribute('stroke-width','1');
+  svg.appendChild(nuc);
+
+  // nucleus label
+  const ntxt=document.createElementNS(ns,'text');
+  ntxt.setAttribute('x',cx);ntxt.setAttribute('y',cy+1);
+  ntxt.setAttribute('text-anchor','middle');ntxt.setAttribute('dominant-baseline','middle');
+  ntxt.setAttribute('font-size','9');ntxt.setAttribute('fill',catTxt);ntxt.setAttribute('font-weight','600');
+  ntxt.textContent=`${protons}p`;
+  svg.appendChild(ntxt);
+  const ntxt2=document.createElementNS(ns,'text');
+  ntxt2.setAttribute('x',cx);ntxt2.setAttribute('y',cy+10);
+  ntxt2.setAttribute('text-anchor','middle');ntxt2.setAttribute('dominant-baseline','middle');
+  ntxt2.setAttribute('font-size','7.5');ntxt2.setAttribute('fill',catTxt);
+  ntxt2.textContent=`${neutrons-protons<0?'?':neutrons-protons}n`;
+  svg.appendChild(ntxt2);
+
+  // orbit ring + electrons
+  const speeds=[3.5,4.5,5.5,7,8.5,10,12];
+  shells.forEach((count,i)=>{
+    const r=nucR+14+(i*20);
+    const orbit=document.createElementNS(ns,'circle');
+    orbit.setAttribute('cx',cx);orbit.setAttribute('cy',cy);
+    orbit.setAttribute('r',r);
+    orbit.setAttribute('fill','none');
+    orbit.setAttribute('stroke','#ccc');
+    orbit.setAttribute('stroke-width','0.5');
+    svg.appendChild(orbit);
+
+    for(let e=0;e<count;e++){
+      const startAngle=(2*Math.PI*e/count);
+      const ex=cx+r*Math.cos(startAngle);
+      const ey=cy+r*Math.sin(startAngle);
+      const g=document.createElementNS(ns,'g');
+      // animate around center
+      const dur=speeds[i]||3+(i*1.5);
+      const animEl=document.createElementNS(ns,'animateTransform');
+      animEl.setAttribute('attributeName','transform');
+      animEl.setAttribute('type','rotate');
+      animEl.setAttribute('from',`${(360*e/count)} ${cx} ${cy}`);
+      animEl.setAttribute('to',`${(360*e/count)+360} ${cx} ${cy}`);
+      animEl.setAttribute('dur',dur+'s');
+      animEl.setAttribute('repeatCount','indefinite');
+
+      const edot=document.createElementNS(ns,'circle');
+      edot.setAttribute('cx',ex);edot.setAttribute('cy',ey);
+      edot.setAttribute('r','3.5');
+      edot.setAttribute('fill','#378ADD');
+      edot.setAttribute('stroke','#042C53');
+      edot.setAttribute('stroke-width','0.5');
+
+      g.appendChild(edot);
+      g.appendChild(animEl);
+      svg.appendChild(g);
     }
+  });
+
+  // element symbol in corner
+  const syml=document.createElementNS(ns,'text');
+  syml.setAttribute('x','6');syml.setAttribute('y','16');
+  syml.setAttribute('font-size','13');syml.setAttribute('font-weight','700');
+  syml.setAttribute('fill','#555');
+  syml.textContent=el.s;
+  svg.appendChild(syml);
+
+  // legend
+  const lg1=document.createElementNS(ns,'circle');
+  lg1.setAttribute('cx','6');lg1.setAttribute('cy','206');lg1.setAttribute('r','4');
+  lg1.setAttribute('fill',catColor);lg1.setAttribute('stroke',catTxt);lg1.setAttribute('stroke-width','0.5');
+  svg.appendChild(lg1);
+  const lt1=document.createElementNS(ns,'text');
+  lt1.setAttribute('x','13');lt1.setAttribute('y','210');lt1.setAttribute('font-size','7');lt1.setAttribute('fill','#888');
+  lt1.textContent='protons/neutrons';svg.appendChild(lt1);
+
+  const lg2=document.createElementNS(ns,'circle');
+  lg2.setAttribute('cx','6');lg2.setAttribute('cy','216');lg2.setAttribute('r','3.5');
+  lg2.setAttribute('fill','#378ADD');lg2.setAttribute('stroke','#042C53');lg2.setAttribute('stroke-width','0.5');
+  svg.appendChild(lg2);
+  const lt2=document.createElementNS(ns,'text');
+  lt2.setAttribute('x','13');lt2.setAttribute('y','219');lt2.setAttribute('font-size','7');lt2.setAttribute('fill','#888');
+  lt2.textContent='electrons';svg.appendChild(lt2);
+}
+
+// ─── Wikipedia image fetch ────────────────────────────────────
+async function fetchElementImage(el){
+  const img=document.getElementById('element-image');
+  const ph=document.getElementById('element-image-placeholder');
+  const cap=document.getElementById('image-caption');
+  img.style.display='none';
+  ph.style.display='block';
+  ph.textContent='Loading image…';
+  cap.textContent='';
+  try{
+    const url=`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(el.name)}`;
+    const r=await fetch(url);
+    const d=await r.json();
+    if(d.thumbnail&&d.thumbnail.source){
+      img.src=d.thumbnail.source;
+      img.onload=()=>{img.style.display='block';ph.style.display='none';};
+      img.onerror=()=>{ph.textContent='No image available';};
+      cap.textContent='Image: Wikipedia';
+    }else{
+      ph.textContent='No image available';
+    }
+  }catch(e){
+    ph.textContent='Image unavailable';
   }
 }
 
+// ─── Multi-select state ───────────────────────────────────────
+let selectedElements=[];
+
+function updateCompoundBar(){
+  const bar=document.getElementById('compound-bar');
+  const chips=document.getElementById('compound-selected');
+  chips.innerHTML='';
+  if(selectedElements.length>=2){
+    bar.classList.add('show');
+    selectedElements.forEach(el=>{
+      const chip=document.createElement('span');
+      chip.className='sel-chip';
+      chip.style.background=CAT_COLORS[el.cat];
+      chip.style.color=CAT_TEXT[el.cat];
+      chip.innerHTML=`${el.s} <span class="rm" data-n="${el.n}">×</span>`;
+      chip.querySelector('.rm').addEventListener('click',e=>{
+        e.stopPropagation();
+        deselectElement(el.n);
+      });
+      chips.appendChild(chip);
+    });
+  }else{
+    bar.classList.remove('show');
+  }
+  // update cell highlights
+  document.querySelectorAll('.cell[data-n]').forEach(c=>{
+    if(selectedElements.find(e=>e.n==c.dataset.n)){c.classList.add('selected');}
+    else{c.classList.remove('selected');}
+  });
+}
+
+function deselectElement(n){
+  selectedElements=selectedElements.filter(e=>e.n!==n);
+  updateCompoundBar();
+}
+
+function toggleSelect(el){
+  const idx=selectedElements.findIndex(e=>e.n===el.n);
+  if(idx>-1){selectedElements.splice(idx,1);}
+  else{selectedElements.push(el);}
+  updateCompoundBar();
+}
+
+// ─── Compound prediction ──────────────────────────────────────
+function gcd(a,b){return b?gcd(b,a%b):a;}
+
+function predictCompound(els){
+  // Determine bond type from electronegativity difference
+  const metals=['alkali-metal','alkaline-earth','transition-metal','post-transition','lanthanide','actinide'];
+  const nonmetals=['nonmetal','halogen','noble-gas'];
+  const allMetals=els.every(e=>metals.includes(e.cat));
+  const allNonMetal=els.every(e=>nonmetals.includes(e.cat)||e.cat==='metalloid');
+  const hasNoble=els.some(e=>e.cat==='noble-gas'&&e.n!==36&&e.n!==54);
+
+  let bondType,bondClass,bondDesc;
+
+  if(hasNoble&&els.some(e=>e.cat!=='noble-gas')){
+    bondType='Typically no bond';bondClass='bond-ionic';
+    bondDesc='Noble gases (except Xe and Kr in rare compounds) do not typically form stable chemical bonds.';
+    return{formula:'—',name:'No stable compound',bondType,bondClass,bondDesc,note:bondDesc};
+  }
+
+  const ens=els.map(e=>e.en).filter(x=>x!==null);
+  let enDiff=0;
+  if(ens.length>=2){
+    enDiff=Math.max(...ens)-Math.min(...ens);
+  }
+
+  if(allMetals){
+    bondType='Metallic bond';bondClass='bond-metallic';
+    bondDesc='Metal atoms share a "sea" of delocalized electrons, forming an alloy or intermetallic compound.';
+  }else if(enDiff>=1.7){
+    bondType='Ionic bond';bondClass='bond-ionic';
+    bondDesc='Large electronegativity difference (Δ≥1.7) — electrons are transferred from the less electronegative atom to the more electronegative one, forming oppositely charged ions.';
+  }else if(enDiff>=0.5){
+    bondType='Polar covalent bond';bondClass='bond-covalent';
+    bondDesc='Moderate electronegativity difference — electrons are shared but unequally, creating a dipole.';
+  }else{
+    bondType='Nonpolar covalent bond';bondClass='bond-covalent';
+    bondDesc='Similar electronegativities — electrons are shared nearly equally between atoms.';
+  }
+
+  // Build formula from oxidation states (simple ionic/covalent balancing)
+  let formula='',name='';
+  if(els.length===2){
+    const [a,b]=els;
+    const oxA=OXIDATION[a.s];
+    const oxB=OXIDATION[b.s];
+    if(oxA&&oxB){
+      // find matching oxidation states that cancel
+      let bestA=oxA[0],bestB=oxB[0];
+      outer:for(let va of oxA){
+        for(let vb of oxB){
+          if(va*vb<0){bestA=va;bestB=vb;break outer;}
+        }
+      }
+      const posV=bestA>0?bestA:-bestA;
+      const negV=bestB<0?-bestB:bestB;
+      const g=gcd(posV,negV);
+      const nA=negV/g, nB=posV/g;
+      // determine which is cation (lower en or metal)
+      let cation=a,anion=b,nCat=nA,nAn=nB;
+      if((b.en||0)<(a.en||0)&&metals.includes(b.cat)){
+        cation=b;anion=a;nCat=nB;nAn=nA;
+      }
+      const subCat=nCat===1?'':toSubscript(nCat);
+      const subAn=nAn===1?'':toSubscript(nAn);
+      formula=`${cation.s}${subCat}${anion.s}${subAn}`;
+      name=buildName(cation,anion,nCat,nAn,bondType);
+    }else{
+      formula=els.map(e=>e.s).join('');
+      name=els.map(e=>e.name).join(' compound');
+    }
+  }else{
+    // 3+ elements: just concatenate with balanced counts if possible
+    formula=els.map(e=>e.s).join('');
+    name='Multi-element compound';
+  }
+
+  return{formula,name,bondType,bondClass,bondDesc,enDiff:enDiff.toFixed(2)};
+}
+
+function toSubscript(n){
+  return String(n).split('').map(d=>'₀₁₂₃₄₅₆₇₈₉'[d]).join('');
+}
+
+function buildName(cat,an,nCat,nAn,bondType){
+  // Common IUPAC-ish naming
+  const prefixes=['','mono','di','tri','tetra','penta','hexa','hepta','octa','nona','deca'];
+  const anionSuffixes={
+    'O':'oxide','S':'sulfide','N':'nitride','F':'fluoride','Cl':'chloride',
+    'Br':'bromide','I':'iodide','P':'phosphide','C':'carbide','H':'hydride',
+    'Se':'selenide','Te':'telluride'
+  };
+  const anSuf=anionSuffixes[an.s]||(an.name.toLowerCase().replace(/ine$/,'ide').replace(/ium$/,'ide').replace(/en$/,'ide')+'ide').replace('ideide','ide');
+  if(bondType.includes('Ionic')){
+    return `${cat.name} ${anSuf}`;
+  }else{
+    const pCat=nCat===1&&an.s!=='O'?'':prefixes[nCat]||nCat;
+    const pAn=prefixes[nAn]||nAn;
+    return `${pCat}${pCat?cat.name.toLowerCase():cat.name} ${pAn}${anSuf}`;
+  }
+}
+
+function showCompoundModal(){
+  if(selectedElements.length<2)return;
+  const pred=predictCompound(selectedElements);
+  const res=document.getElementById('compound-result');
+  const enText=pred.enDiff!==undefined?`<div class="c-stat"><div class="c-stat-label">ΔElectronegativity</div><div class="c-stat-val">${pred.enDiff}</div></div>`:'';
+  const elList=selectedElements.map(e=>`<span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:12px;font-weight:600;background:${CAT_COLORS[e.cat]};color:${CAT_TEXT[e.cat]};margin:2px">${e.s} – ${e.name}</span>`).join(' + ');
+  res.innerHTML=`
+    <div style="margin-bottom:0.75rem;font-size:12px;color:#888">${elList}</div>
+    <div class="compound-formula">${pred.formula}</div>
+    <div class="compound-name">${pred.name}</div>
+    <span class="bond-badge ${pred.bondClass}">${pred.bondType}</span>
+    <div class="compound-details">
+      ${selectedElements.map(e=>`<div class="c-stat"><div class="c-stat-label">${e.name} (${e.s})</div><div class="c-stat-val">EN: ${e.en??'—'} · Ox: ${(OXIDATION[e.s]||['?']).join(', ')}</div></div>`).join('')}
+      ${enText}
+    </div>
+    <div class="compound-note">${pred.bondDesc}</div>
+  `;
+  document.getElementById('compound-modal').classList.add('show');
+}
+
+// ─── Panel ────────────────────────────────────────────────────
 function showPanel(el){
   document.getElementById('panel-num').textContent=el.n;
   document.getElementById('panel-sym').textContent=el.s;
@@ -284,14 +680,65 @@ function showPanel(el){
   document.getElementById('p-mass').textContent=el.mass+' u';
   document.getElementById('p-pg').textContent=el.period+' / '+el.group;
   document.getElementById('p-ec').textContent=el.ec;
-  document.getElementById('p-en').textContent=el.en;
+  document.getElementById('p-en').textContent=el.en??'—';
   document.getElementById('p-bp').textContent=el.bp;
   document.getElementById('p-mp').textContent=el.mp;
+  drawAtom(el);
+  fetchElementImage(el);
   const panel=document.getElementById('panel');
   panel.style.display='block';
   panel.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
+// ─── Grid ─────────────────────────────────────────────────────
+function getRow(el){
+  if(el.period===8)return 9;
+  if(el.period===9)return 10;
+  return el.period;
+}
+
+function makeGrid(){
+  const grid=document.getElementById('pt-grid');
+  const byPos={};
+  elements.forEach(el=>byPos[`${getRow(el)}-${el.group}`]=el);
+
+  for(let r=1;r<=10;r++){
+    const startCol=(r===9||r===10)?3:1;
+    if(r===9||r===10){
+      const lbl=document.createElement('div');
+      lbl.className='lbl';
+      lbl.style.cssText=`grid-column:1/3;grid-row:${r}`;
+      lbl.textContent=r===9?'Lanthanides →':'Actinides →';
+      grid.appendChild(lbl);
+    }
+    for(let c=startCol;c<=18;c++){
+      const el=byPos[`${r}-${c}`];
+      const div=document.createElement('div');
+      div.style.cssText=`grid-column:${c};grid-row:${r}`;
+      if(el){
+        div.className='cell';
+        div.dataset.cat=el.cat;
+        div.dataset.n=el.n;
+        div.style.background=CAT_COLORS[el.cat];
+        div.style.color=CAT_TEXT[el.cat];
+        div.innerHTML=`<span class="num">${el.n}</span><span class="sym">${el.s}</span>`;
+        div.title=el.name+' (click: info, Shift+click: select for compound)';
+        div.addEventListener('click',e=>{
+          if(e.shiftKey||e.ctrlKey||e.metaKey){
+            toggleSelect(el);
+          }else{
+            showPanel(el);
+          }
+        });
+      }else{
+        div.className='cell empty';
+      }
+      grid.appendChild(div);
+    }
+  }
+}
+
+// ─── Legend ───────────────────────────────────────────────────
 function makeLegend(){
   const leg=document.getElementById('legend');
   Object.entries(CAT_LABELS).forEach(([cat,label])=>{
@@ -302,20 +749,44 @@ function makeLegend(){
   });
 }
 
+
+// ─── Event listeners ──────────────────────────────────────────
 document.querySelectorAll('.filter-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
     document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     const cat=btn.dataset.cat;
     document.querySelectorAll('.cell[data-cat]').forEach(cell=>{
-      if(cat==='all'||cell.dataset.cat===cat){cell.classList.remove('dim');}
-      else{cell.classList.add('dim');}
+      if(cat==='all'||cell.dataset.cat===cat)cell.classList.remove('dim');
+      else cell.classList.add('dim');
     });
   });
 });
 
 document.getElementById('close-panel').addEventListener('click',()=>{
   document.getElementById('panel').style.display='none';
+});
+document.getElementById('predict-btn').addEventListener('click',showCompoundModal);
+document.getElementById('clear-sel-btn').addEventListener('click',()=>{
+  selectedElements=[];updateCompoundBar();
+});
+document.getElementById('compound-close').addEventListener('click',()=>{
+  document.getElementById('compound-modal').classList.remove('show');
+});
+document.getElementById('compound-modal').addEventListener('click',e=>{
+  if(e.target===document.getElementById('compound-modal'))
+    document.getElementById('compound-modal').classList.remove('show');
+});
+
+// ─── Display toggles ─────────────────────────────────────────
+document.getElementById('tog-nums').addEventListener('change',function(){
+  document.getElementById('pt-grid').classList.toggle('hide-nums',!this.checked);
+});
+document.getElementById('tog-syms').addEventListener('change',function(){
+  document.getElementById('pt-grid').classList.toggle('hide-syms',!this.checked);
+});
+document.getElementById('tog-colors').addEventListener('change',function(){
+  document.getElementById('pt-grid').classList.toggle('hide-colors',!this.checked);
 });
 
 makeGrid();
