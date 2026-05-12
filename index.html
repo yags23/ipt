@@ -54,7 +54,7 @@ h1{font-size:1.4rem;font-weight:500;margin-bottom:0.75rem;color:#333}
 .leg-dot{width:10px;height:10px;border-radius:3px}
 
 /* Compound bar */
-#compound-bar{display:none;margin:0.5rem 0;padding:0.75rem 1rem;background:#fff;border:1px solid #ddd;border-radius:10px;align-items:center;gap:0.75rem;flex-wrap:wrap}
+#compound-bar{display:none;margin:0 0 0.75rem;padding:0.75rem 1rem;background:#fff;border:1px solid #ddd;border-radius:10px;align-items:center;gap:0.75rem;flex-wrap:wrap}
 #compound-bar.show{display:flex}
 #compound-selected{display:flex;gap:6px;flex-wrap:wrap;flex:1}
 .sel-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:12px;font-weight:600;background:#eee;cursor:pointer}
@@ -65,7 +65,7 @@ h1{font-size:1.4rem;font-weight:500;margin-bottom:0.75rem;color:#333}
 #clear-sel-btn{padding:5px 10px;border-radius:20px;border:1px solid #ccc;background:#fff;color:#666;font-size:12px;cursor:pointer}
 
 /* Element panel */
-#panel{margin-top:1rem;border:1px solid #ddd;border-radius:12px;padding:1.25rem;display:none;background:#fff}
+#panel{margin-bottom:1rem;border:1px solid #ddd;border-radius:12px;padding:1.25rem;display:none;background:#fff}
 #panel.show{display:block}
 #panel-inner{display:grid;grid-template-columns:1fr 220px;gap:1.25rem}
 @media(max-width:600px){#panel-inner{grid-template-columns:1fr}}
@@ -157,16 +157,6 @@ h1{font-size:1.4rem;font-weight:500;margin-bottom:0.75rem;color:#333}
   <button class="filter-btn" data-cat="actinide">Actinides</button>
 </div>
 
-<div id="table-area"><div id="pt-grid"></div></div>
-<div id="legend"></div>
-
-<div id="compound-bar">
-  <span style="font-size:12px;color:#666;white-space:nowrap">Selected:</span>
-  <div id="compound-selected"></div>
-  <button id="predict-btn">⚗ Predict compound</button>
-  <button id="clear-sel-btn">Clear</button>
-</div>
-
 <div id="panel">
   <div id="panel-inner">
     <div id="panel-left">
@@ -209,6 +199,16 @@ h1{font-size:1.4rem;font-weight:500;margin-bottom:0.75rem;color:#333}
     <div id="compound-result"></div>
   </div>
 </div>
+
+<div id="compound-bar">
+  <span style="font-size:12px;color:#666;white-space:nowrap">Selected:</span>
+  <div id="compound-selected"></div>
+  <button id="predict-btn">⚗ Predict compound</button>
+  <button id="clear-sel-btn">Clear</button>
+</div>
+
+<div id="table-area"><div id="pt-grid"></div></div>
+<div id="legend"></div>
 
 <script>
 const CAT_COLORS={
@@ -687,7 +687,7 @@ function showPanel(el){
   fetchElementImage(el);
   const panel=document.getElementById('panel');
   panel.style.display='block';
-  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 // ─── Grid ─────────────────────────────────────────────────────
