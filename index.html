@@ -344,11 +344,28 @@ const USES={
   Pu:'Nuclear weapons, RTG power sources on Voyager, Cassini & Curiosity rover',
   Am:'Ionisation smoke detectors (⁻²⁴¹Am), RTG power for spacecraft, industrial thickness gauges',
   Cm:'RTG power sources for deep-space probes, nuclear research',
-  Bk:'Scientific research only — produced in microgram amounts',
-  Cf:'Neutron moisture gauges in oil/gas, gold & silver ore assay instruments, cancer brachytherapy',
-  Es:'Scientific research only — produced in sub-microgram amounts',
-  Fm:'Scientific research only',Md:'Scientific research only',
-  No:'Scientific research only',Lr:'Scientific research only',
+  Bk:'Berkelium has no practical applications outside of nuclear research. It is produced in microgram quantities by bombarding americium with neutrons in a high-flux reactor over many months. It has been used as a target material to synthesise heavier elements — notably used to create tennessine (element 117). Research focuses on understanding actinide chemical behaviour.',
+  Cf:'Californium-252 is one of the few transuranic elements with real-world uses: it serves as a portable neutron source for moisture gauges in construction and mining, for detecting gold and silver ore in borehole logging, and as a start-up neutron source for nuclear reactors. It is also used in cancer brachytherapy for treating cervical and head/neck tumours.',
+  Es:'Einsteinium has no practical applications. It was discovered in 1952 in the fallout debris of the first hydrogen bomb test (Ivy Mike). Only sub-microgram quantities have ever been produced in nuclear reactors. It was used once as a target to synthesise element 101 (mendelevium), and recent research has probed its basic chemical and optical properties for the first time.',
+  Fm:'Fermium has no practical applications outside of research. It is produced in only picogram quantities by bombarding lighter elements with neutrons in nuclear reactors. It is studied to advance understanding of superheavy element chemistry and nuclear structure.',
+  Md:'Mendelevium has no practical applications. Only a few atoms have ever been produced at a time via cyclotron bombardment. It is studied purely to probe the limits of the periodic table and the behaviour of actinide elements.',
+  No:'Nobelium has no practical applications. It can only be produced atom by atom in particle accelerators and exists for seconds to minutes. Research focuses on its chemical oxidation states, which are unusual among the actinides.',
+  Lr:'Lawrencium has no practical applications. It is the last actinide and has only been produced in quantities of a few atoms. Research is directed at understanding its electronic structure and whether it behaves more like an actinide or a d-block transition metal.',
+  Rf:'Rutherfordium has no practical, commercial, or industrial applications. It is a synthetic transactinide element produced one atom at a time in heavy-ion accelerators. Its extremely short-lived isotopes (longest half-life ~1 hour) and the tiny quantities produced mean it is studied purely to test nuclear models and explore superheavy element chemistry.',
+  Db:'Dubnium has no practical applications. Only a few hundred atoms have ever been made, and its longest-lived isotope has a half-life of about 28 hours. It is produced in accelerators by colliding lighter nuclei and studied to understand chemical trends at the far end of the periodic table.',
+  Sg:'Seaborgium has no practical applications. Named after Glenn Seaborg, it was first synthesised in 1974. Only tiny numbers of atoms have been produced and its most stable isotope lasts just minutes. Research probes whether superheavy elements still follow periodic trends.',
+  Bh:'Bohrium has no practical applications. It is produced in particle accelerators by nuclear fusion reactions, with only a few dozen atoms made at a time. Its most stable isotope has a half-life of around 61 seconds, making any bulk application impossible.',
+  Hs:'Hassium has no practical, commercial, or industrial applications due to its extreme scarcity, high radioactivity, and short half-life. Its only use is in fundamental scientific research, specifically to explore the properties of superheavy elements and test nuclear models. Only a few hundred atoms have ever been made.',
+  Mt:'Meitnerium has no practical applications. Named after physicist Lise Meitner, it has only ever been produced in atom-at-a-time quantities. Its most stable known isotope has a half-life of just a few seconds. It is studied solely to probe nuclear stability and superheavy element behaviour.',
+  Ds:'Darmstadtium has no practical applications. It was first synthesised in 1994 at the GSI Helmholtz Centre in Darmstadt, Germany. Only a few atoms have been produced, with a half-life measured in microseconds to seconds. Research aims to understand the "island of stability" — a predicted region of relatively stable superheavy nuclei.',
+  Rg:'Roentgenium has no practical applications. Named after Wilhelm Röntgen, discoverer of X-rays, it was first made in 1994. Only a handful of atoms have ever existed, with the most stable isotope lasting about 26 seconds. It is studied for its relativistic electron behaviour, which causes gold-like chemical properties.',
+  Cn:'Copernicium has no practical applications. Named after astronomer Nicolaus Copernicus, it was first synthesised in 1996. Fewer than 100 atoms have ever been made, with a half-life of approximately 29 seconds. Notably, it may behave as a noble gas rather than a metal due to extreme relativistic effects on its outer electrons.',
+  Nh:'Nihonium has no practical applications. Named after Japan (Nihon), it was first synthesised at RIKEN in 2004. Only a few atoms have been confirmed, with a half-life of about 10 seconds. Research focuses on its chemistry and where it sits in periodic trends for post-lead elements.',
+  Fl:'Flerovium has no practical applications. Named after the Flerov Laboratory in Russia, it was first made in 1999 by colliding plutonium-244 with calcium-48. Only a handful of atoms exist at a time, with a half-life of ~2 seconds. Theoretical models predict it may behave as a noble-gas-like element due to relativistic effects.',
+  Mc:'Moscovium has no practical applications. Named after Moscow Oblast, it was first synthesised in 2003. Only a few dozen atoms have been confirmed, with a half-life of approximately 220 milliseconds. Its decay products are studied to map the predicted "island of stability" in superheavy nuclei.',
+  Lv:'Livermorium has no practical applications. Named after Lawrence Livermore National Laboratory, it was first synthesised in 2000. It exists for only tens of milliseconds and has only been produced in atom quantities. Research explores its position in the chalcogen group and whether relativistic effects alter its expected chemical behaviour.',
+  Ts:'Tennessine has no practical applications. Named in honour of Tennessee (home to Oak Ridge, Vanderbilt, and UT), it was first confirmed in 2010. Only a handful of atoms have been made, with a half-life of around 51 milliseconds. It is expected to be a metalloid or post-transition metal and is studied to test models of superheavy element chemistry.',
+  Og:'Oganesson has no practical applications. Named after physicist Yuri Oganessian, it is the heaviest known element and the last on the periodic table. Only 5 atoms have ever been confirmed, with a half-life of less than 1 millisecond. Theoretical models suggest it may not behave as a noble gas at all, due to extreme relativistic quantum effects that may give it a solid state at room temperature — challenging our understanding of the periodic law itself.',
 };
 
 // ─── CORRECTED Bohr shell capacities ────────────────────────
@@ -487,7 +504,19 @@ function showPanel(el){
   document.getElementById('p-en').textContent=el.en??'—';
   document.getElementById('p-bp').textContent=el.bp;
   document.getElementById('p-mp').textContent=el.mp;
-  document.getElementById('p-uses').textContent=USES[el.s]||'No data available';
+  const usesText=USES[el.s];
+  const usesEl=document.getElementById('p-uses');
+  const usesWrap=document.getElementById('el-uses');
+  if(usesText){
+    usesEl.textContent=usesText;
+    // If the text is a "no applications" explanation, use a muted amber style instead of blue
+    const isResearchOnly=usesText.toLowerCase().includes('no practical')||usesText.toLowerCase().includes('no applications')||usesText.toLowerCase().includes('research only');
+    usesWrap.style.background=isResearchOnly?'#fffaf0':'#f0f9ff';
+    usesWrap.style.color=isResearchOnly?'#5a3e00':'#1a4060';
+  }else{
+    usesEl.textContent='No usage data recorded for this element.';
+    usesWrap.style.background='#f5f4f1';usesWrap.style.color='#666';
+  }
   drawAtom(el);
   fetchElementImage(el);
   document.getElementById('el-modal').classList.add('show');
