@@ -33,6 +33,17 @@ h1{font-size:1.4rem;font-weight:500;margin-bottom:0.75rem;color:#333}
 .filter-btn{font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid #ccc;background:#fff;cursor:pointer;color:#555;transition:all 0.15s}
 .filter-btn:hover,.filter-btn.active{background:#333;color:#fff;border-color:#333}
 
+/* Compound bar */
+#compound-bar{display:none;margin:0 0 0.75rem;padding:0.75rem 1rem;background:#fff;border:1px solid #ddd;border-radius:10px;align-items:center;gap:0.75rem;flex-wrap:wrap}
+#compound-bar.show{display:flex}
+#compound-selected{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.sel-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer}
+.sel-chip .rm{font-size:14px;opacity:0.5;line-height:1}
+.sel-chip .rm:hover{opacity:1}
+#predict-btn{padding:5px 14px;border-radius:20px;border:none;background:#333;color:#fff;font-size:12px;cursor:pointer;white-space:nowrap}
+#predict-btn:hover{background:#000}
+#clear-sel-btn{padding:5px 10px;border-radius:20px;border:1px solid #ccc;background:#fff;color:#666;font-size:12px;cursor:pointer}
+
 /* Table */
 #table-area{overflow-x:auto;padding-bottom:0.5rem}
 #pt-grid{display:grid;grid-template-columns:repeat(18,minmax(34px,1fr));gap:2px;min-width:640px}
@@ -53,67 +64,56 @@ h1{font-size:1.4rem;font-weight:500;margin-bottom:0.75rem;color:#333}
 .leg-item{display:flex;align-items:center;gap:4px;font-size:11px;color:#555}
 .leg-dot{width:10px;height:10px;border-radius:3px}
 
-/* Compound bar */
-#compound-bar{display:none;margin:0 0 0.75rem;padding:0.75rem 1rem;background:#fff;border:1px solid #ddd;border-radius:10px;align-items:center;gap:0.75rem;flex-wrap:wrap}
-#compound-bar.show{display:flex}
-#compound-selected{display:flex;gap:6px;flex-wrap:wrap;flex:1}
-.sel-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:12px;font-weight:600;background:#eee;cursor:pointer}
-.sel-chip .rm{font-size:14px;opacity:0.5;line-height:1}
-.sel-chip .rm:hover{opacity:1}
-#predict-btn{padding:5px 14px;border-radius:20px;border:none;background:#333;color:#fff;font-size:12px;cursor:pointer;white-space:nowrap}
-#predict-btn:hover{background:#000}
-#clear-sel-btn{padding:5px 10px;border-radius:20px;border:1px solid #ccc;background:#fff;color:#666;font-size:12px;cursor:pointer}
+/* Shared modal base */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:900;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.show{display:flex}
+.modal-box{background:#fff;border-radius:14px;padding:1.5rem;width:100%;position:relative;max-height:92vh;overflow-y:auto}
+.modal-close{position:absolute;top:1rem;right:1rem;font-size:22px;cursor:pointer;color:#999;background:none;border:none;line-height:1}
+.modal-close:hover{color:#333}
 
-/* Element panel */
-#panel{margin-bottom:1rem;border:1px solid #ddd;border-radius:12px;padding:1.25rem;display:none;background:#fff}
-#panel.show{display:block}
-#panel-inner{display:grid;grid-template-columns:1fr 220px;gap:1.25rem}
-@media(max-width:600px){#panel-inner{grid-template-columns:1fr}}
-#panel-left{}
-#panel-top{display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap;margin-bottom:1rem}
-#panel-num{font-size:40px;font-weight:300;color:#999;min-width:44px;line-height:1}
-#panel-info{flex:1;min-width:140px}
-#panel-name{font-size:20px;font-weight:500}
-#panel-cat{font-size:12px;color:#888;margin-top:2px}
-#panel-sym{font-size:52px;font-weight:600;line-height:1}
-.close-btn{font-size:22px;cursor:pointer;color:#999;background:none;border:none;padding:0;line-height:1;margin-left:auto}
-.close-btn:hover{color:#333}
-#panel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-@media(max-width:480px){#panel-grid{grid-template-columns:repeat(2,1fr)}}
-.p-stat{background:#f5f4f1;border-radius:8px;padding:0.6rem 0.75rem}
-.p-stat-label{font-size:11px;color:#888}
-.p-stat-val{font-size:14px;font-weight:500;margin-top:2px;word-break:break-all}
-#panel-right{display:flex;flex-direction:column;gap:10px;min-width:0}
-#atom-diagram{width:100%;aspect-ratio:1;max-width:220px}
-#element-image-wrap{width:100%;border-radius:8px;overflow:hidden;background:#f0efe9;display:flex;align-items:center;justify-content:center;min-height:90px}
-#element-image{width:100%;height:auto;display:none;border-radius:8px}
-#element-image-placeholder{font-size:12px;color:#aaa;padding:1rem;text-align:center}
-#image-caption{font-size:10px;color:#aaa;text-align:center;margin-top:4px}
+/* Element modal */
+#el-modal{z-index:900}
+#el-box{max-width:700px}
+#el-top{display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap;margin-bottom:1.1rem}
+#el-num{font-size:44px;font-weight:300;color:#bbb;min-width:50px;line-height:1}
+#el-info{flex:1;min-width:140px}
+#el-name{font-size:22px;font-weight:600}
+#el-catname{font-size:12px;color:#888;margin-top:3px}
+#el-sym{font-size:56px;font-weight:700;line-height:1}
+#el-body{display:grid;grid-template-columns:1fr 200px;gap:1.25rem}
+@media(max-width:560px){#el-body{grid-template-columns:1fr}}
+#el-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:0.85rem}
+@media(max-width:420px){#el-stats{grid-template-columns:1fr 1fr}}
+.p-stat{background:#f5f4f1;border-radius:8px;padding:0.55rem 0.7rem}
+.p-stat-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.3px}
+.p-stat-val{font-size:13px;font-weight:500;margin-top:2px;word-break:break-all}
+#el-uses{background:#f0f9ff;border-radius:8px;padding:0.65rem 0.85rem;font-size:12px;color:#1a4060;line-height:1.6}
+#el-uses strong{display:block;font-size:10px;color:#888;margin-bottom:3px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+#el-right{display:flex;flex-direction:column;gap:10px;min-width:0}
+#atom-diagram{width:100%;aspect-ratio:1;max-width:200px}
+#el-img-wrap{width:100%;border-radius:8px;overflow:hidden;background:#f0efe9;display:flex;align-items:center;justify-content:center;min-height:80px}
+#el-img{width:100%;height:auto;display:none;border-radius:8px}
+#el-img-ph{font-size:12px;color:#aaa;padding:0.75rem;text-align:center}
+#el-img-cap{font-size:10px;color:#aaa;text-align:center;margin-top:4px}
 
 /* Compound modal */
-#compound-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1000;align-items:center;justify-content:center;padding:1rem}
-#compound-modal.show{display:flex}
-#compound-box{background:#fff;border-radius:14px;padding:1.5rem;max-width:520px;width:100%;position:relative;max-height:90vh;overflow-y:auto}
+#compound-modal{z-index:1000}
+#compound-box{max-width:580px}
 #compound-box h2{font-size:1.2rem;font-weight:600;margin-bottom:1rem}
 .compound-formula{font-size:2.5rem;font-weight:700;text-align:center;margin:0.5rem 0 0.25rem;letter-spacing:1px}
 .compound-name{font-size:1rem;color:#555;text-align:center;margin-bottom:1rem}
-.bond-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin:0 auto 1rem;display:block;width:fit-content}
+.bond-badge{display:block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin:0 auto 1rem;width:fit-content}
 .bond-ionic{background:#faeeda;color:#412402}
 .bond-covalent{background:#e1f5ee;color:#04342c}
 .bond-metallic{background:#e6f1fb;color:#042c53}
-.bond-mixed{background:#f3eeff;color:#26215C}
 .compound-details{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:0.75rem}
 .c-stat{background:#f5f4f1;border-radius:8px;padding:0.6rem 0.75rem}
 .c-stat-label{font-size:11px;color:#888}
-.c-stat-val{font-size:13px;font-weight:500;margin-top:2px}
-#compound-close{position:absolute;top:1rem;right:1rem;font-size:22px;cursor:pointer;color:#999;background:none;border:none;line-height:1}
-#compound-close:hover{color:#333}
-.compound-note{font-size:12px;color:#777;margin-top:0.75rem;line-height:1.5;background:#f9f8f5;border-radius:8px;padding:0.6rem 0.75rem}
-
-/* Atom SVG animations */
-@keyframes orbit1{from{transform:rotate(0deg) translateX(var(--r)) rotate(0deg)}to{transform:rotate(360deg) translateX(var(--r)) rotate(-360deg)}}
-@keyframes orbit2{from{transform:rotate(120deg) translateX(var(--r)) rotate(-120deg)}to{transform:rotate(480deg) translateX(var(--r)) rotate(-480deg)}}
-@keyframes orbit3{from{transform:rotate(240deg) translateX(var(--r)) rotate(-240deg)}to{transform:rotate(600deg) translateX(var(--r)) rotate(-600deg)}}
+.c-stat-val{font-size:12px;font-weight:500;margin-top:2px}
+.compound-note{font-size:12px;color:#777;margin-top:0.75rem;line-height:1.55;background:#f9f8f5;border-radius:8px;padding:0.6rem 0.75rem}
+#lewis-wrap{margin-top:1rem}
+#lewis-wrap h3{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;font-weight:600}
+#lewis-svg-wrap{display:flex;justify-content:center;background:#fafaf8;border-radius:10px;padding:0.75rem;border:1px solid #eee}
 </style>
 </head>
 <body>
@@ -121,9 +121,9 @@ h1{font-size:1.4rem;font-weight:500;margin-bottom:0.75rem;color:#333}
 
 <div id="instructions">
   <h2>How to use this periodic table</h2>
-  <div class="inst-item"><span class="inst-icon">🖱️</span><span><strong>Click</strong> any element to open its detail panel — atomic data, Bohr atom diagram, and a Wikipedia photo.</span></div>
-  <div class="inst-item"><span class="inst-icon">⇧</span><span><strong>Shift+click</strong> (or Ctrl/Cmd+click) two or more elements to select them, then hit <strong>⚗ Predict compound</strong> to see the chemical formula and bond type.</span></div>
-  <div class="inst-item"><span class="inst-icon">🎓</span><span>Use the <strong>toggles below</strong> to hide atomic numbers, element symbols, or colours for self-testing.</span></div>
+  <div class="inst-item"><span class="inst-icon">🖱️</span><span><strong>Click</strong> any element to open its detail panel — atomic data, animated Bohr diagram, Wikipedia photo, and common uses.</span></div>
+  <div class="inst-item"><span class="inst-icon">⇧</span><span><strong>Shift+click</strong> (or Ctrl/Cmd+click) two or more elements to select them, then hit <strong>⚗ Predict compound</strong> to see the formula, bond type, and Lewis electron dot diagram.</span></div>
+  <div class="inst-item"><span class="inst-icon">🎓</span><span>Use the <strong>Display toggles</strong> below to hide atomic numbers, symbols, or colours for self-testing.</span></div>
 </div>
 
 <div id="toggle-bar">
@@ -157,49 +157,6 @@ h1{font-size:1.4rem;font-weight:500;margin-bottom:0.75rem;color:#333}
   <button class="filter-btn" data-cat="actinide">Actinides</button>
 </div>
 
-<div id="panel">
-  <div id="panel-inner">
-    <div id="panel-left">
-      <div id="panel-top">
-        <div id="panel-num"></div>
-        <div id="panel-info">
-          <div id="panel-name"></div>
-          <div id="panel-cat"></div>
-        </div>
-        <div id="panel-sym"></div>
-        <button class="close-btn" id="close-panel">×</button>
-      </div>
-      <div id="panel-grid">
-        <div class="p-stat"><div class="p-stat-label">Atomic mass</div><div class="p-stat-val" id="p-mass">—</div></div>
-        <div class="p-stat"><div class="p-stat-label">Period / Group</div><div class="p-stat-val" id="p-pg">—</div></div>
-        <div class="p-stat"><div class="p-stat-label">Electron config</div><div class="p-stat-val" id="p-ec" style="font-size:12px">—</div></div>
-        <div class="p-stat"><div class="p-stat-label">Electronegativity</div><div class="p-stat-val" id="p-en">—</div></div>
-        <div class="p-stat"><div class="p-stat-label">Boiling point</div><div class="p-stat-val" id="p-bp">—</div></div>
-        <div class="p-stat"><div class="p-stat-label">Melting point</div><div class="p-stat-val" id="p-mp">—</div></div>
-      </div>
-    </div>
-    <div id="panel-right">
-      <svg id="atom-diagram" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg"></svg>
-      <div>
-        <div id="element-image-wrap">
-          <img id="element-image" alt="Element photo" crossorigin="anonymous" />
-          <div id="element-image-placeholder">Loading image…</div>
-        </div>
-        <div id="image-caption"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Compound modal -->
-<div id="compound-modal">
-  <div id="compound-box">
-    <button id="compound-close">×</button>
-    <h2>Compound prediction</h2>
-    <div id="compound-result"></div>
-  </div>
-</div>
-
 <div id="compound-bar">
   <span style="font-size:12px;color:#666;white-space:nowrap">Selected:</span>
   <div id="compound-selected"></div>
@@ -209,6 +166,50 @@ h1{font-size:1.4rem;font-weight:500;margin-bottom:0.75rem;color:#333}
 
 <div id="table-area"><div id="pt-grid"></div></div>
 <div id="legend"></div>
+
+<!-- Element detail modal -->
+<div id="el-modal" class="modal-overlay">
+  <div id="el-box" class="modal-box">
+    <button id="el-close" class="modal-close">×</button>
+    <div id="el-top">
+      <div id="el-num"></div>
+      <div id="el-info"><div id="el-name"></div><div id="el-catname"></div></div>
+      <div id="el-sym"></div>
+    </div>
+    <div id="el-body">
+      <div>
+        <div id="el-stats">
+          <div class="p-stat"><div class="p-stat-label">Atomic mass</div><div class="p-stat-val" id="p-mass">—</div></div>
+          <div class="p-stat"><div class="p-stat-label">Period / Group</div><div class="p-stat-val" id="p-pg">—</div></div>
+          <div class="p-stat"><div class="p-stat-label">Electron config</div><div class="p-stat-val" id="p-ec" style="font-size:11px">—</div></div>
+          <div class="p-stat"><div class="p-stat-label">Electronegativity</div><div class="p-stat-val" id="p-en">—</div></div>
+          <div class="p-stat"><div class="p-stat-label">Boiling point</div><div class="p-stat-val" id="p-bp">—</div></div>
+          <div class="p-stat"><div class="p-stat-label">Melting point</div><div class="p-stat-val" id="p-mp">—</div></div>
+        </div>
+        <div id="el-uses"><strong>Common uses &amp; where it&#39;s found</strong><span id="p-uses">—</span></div>
+      </div>
+      <div id="el-right">
+        <svg id="atom-diagram" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div>
+          <div id="el-img-wrap">
+            <img id="el-img" alt="Element photo" crossorigin="anonymous"/>
+            <div id="el-img-ph">Loading image…</div>
+          </div>
+          <div id="el-img-cap"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Compound modal -->
+<div id="compound-modal" class="modal-overlay">
+  <div id="compound-box" class="modal-box">
+    <button id="compound-close" class="modal-close">×</button>
+    <h2>Compound prediction</h2>
+    <div id="compound-result"></div>
+  </div>
+</div>
 
 <script>
 const CAT_COLORS={
@@ -227,12 +228,6 @@ const CAT_LABELS={
   'halogen':'Halogens','noble-gas':'Noble gases','lanthanide':'Lanthanides','actinide':'Actinides'
 };
 
-// Valence electrons for each group / special cases
-const VALENCE={
-  1:1,2:2,3:3,4:4,5:3,6:2,7:1,8:0, // groups 13-18 mapped below
-  13:3,14:4,15:5,16:6,17:7,18:0
-};
-// Oxidation states for common elements
 const OXIDATION={
   H:[1,-1],He:[0],Li:[1],Be:[2],B:[3],C:[4,2,-4],N:[3,-3,5],O:[-2,-1],F:[-1],Ne:[0],
   Na:[1],Mg:[2],Al:[3],Si:[4,-4],P:[5,3,-3],S:[6,4,-2],Cl:[1,3,5,7,-1],Ar:[0],
@@ -243,6 +238,462 @@ const OXIDATION={
   Fr:[1],Ra:[2],Ac:[3],U:[6,4],
 };
 
+function valenceElectrons(el){
+  const g=el.group;
+  if(g===1)return 1; if(g===2)return 2;
+  if(g>=3&&g<=12)return 2;
+  if(g===13)return 3; if(g===14)return 4; if(g===15)return 5;
+  if(g===16)return 6; if(g===17)return 7; if(g===18)return 8;
+  return 0;
+}
+
+const USES={
+  H:'Rocket fuel, hydrogen fuel cells, manufacturing ammonia (fertilisers), petroleum refining',
+  He:'Party/weather balloons, MRI scanner cooling, welding shielding gas, deep-sea diving tanks',
+  Li:'Lithium-ion batteries (phones, laptops, EVs), psychiatric medication (mood stabiliser), glass-ceramics',
+  Be:'Aerospace structural alloys, X-ray window material, nuclear reactors, audio speaker components',
+  B:'Borosilicate glass (Pyrex cookware), laundry detergents, crop fertilisers, semiconductor dopant',
+  C:'Steel production, fuels (coal, petroleum), all plastics, diamond cutting tools, pencil graphite',
+  N:'Fertilisers (via ammonia), food packaging (inert atmosphere), liquid nitrogen cooling, explosives',
+  O:'Breathing & medical oxygen, steel-making, water treatment, rocket propellant (liquid O₂)',
+  F:'Toothpaste (fluoride), non-stick cookware (PTFE/Teflon), refrigerants (HFCs), uranium enrichment',
+  Ne:'Neon signs & advertising, lasers, cryogenic refrigeration, high-voltage indicator tubes',
+  Na:'Table salt (NaCl), soap & detergent making, sodium street lights, baking soda',
+  Mg:'Lightweight alloys (cars, aircraft, bicycles), fireworks & flares, camera flashes, dietary supplements',
+  Al:'Aircraft & car body panels, food & drink cans, kitchen foil, power transmission lines, window frames',
+  Si:'Computer chips & solar panels, glass & concrete, silicone sealants, optical fibres',
+  P:'Fertilisers (phosphate), matches, fireworks, DNA/RNA backbone, cleaning detergents',
+  S:'Fertilisers & sulfuric acid, rubber vulcanisation, gunpowder, medicines, car batteries',
+  Cl:'Drinking water purification, PVC plastic pipes, bleach, hydrochloric acid, swimming pools',
+  Ar:'MIG/TIG welding shielding gas, incandescent & fluorescent bulbs, double-glazed window filling, lasers',
+  K:'Crop fertilisers (potash), potassium supplements, glass making, gunpowder (saltpetre)',
+  Ca:'Concrete & cement, bones and teeth, antacids (calcium carbonate), cheese & dairy, paper production',
+  Sc:'Al–Sc alloys (high-end bicycles, baseball bats, aerospace), stadium lighting, solid-state lasers',
+  Ti:'Aircraft & spacecraft structures, hip/knee implants, white paint pigment (TiO₂), watches',
+  V:'High-strength tool & spring steel alloys, vanadium redox flow batteries, catalysts',
+  Cr:'Stainless steel, decorative chrome plating, leather tanning, pigments (chrome yellow/green)',
+  Mn:'Steel production (hardening), dry-cell batteries (MnO₂ cathode), fertilisers, purple glass tinting',
+  Fe:'Construction steel & rebar, cast-iron cookware, vehicle chassis, permanent magnets, haemoglobin',
+  Co:'Lithium-ion battery cathodes, brilliant blue glass & pottery, jet engine superalloys, cancer radiotherapy',
+  Ni:'Stainless steel, coins (nickel-plated), NiMH batteries, electric guitar strings, magnets',
+  Cu:'Electrical wiring, plumbing pipes, coins, electric motors, printed circuit boards',
+  Zn:'Galvanising steel (rust prevention), brass alloys, sunscreen (ZnO), die casting, zinc supplements',
+  Ga:'GaN LEDs & laser diodes, solar cells (CIGS), MRI contrast agents, low-melting alloys',
+  Ge:'Fibre-optic cable cores, infrared camera lenses, transistors (historic), solar cells',
+  As:'Pressure-treated wood preservatives, GaAs semiconductors, pesticides',
+  Se:'Solar cells (CdTe), glass decolourant, photocopier drums, dietary trace element',
+  Br:'Flame retardants in electronics & furniture, photographic film, water treatment, medications (sedatives)',
+  Kr:'Fluorescent & neon-style lights, photographic flash lamps, lasers, inert double-glazing gas',
+  Rb:'Atomic clocks (GPS & internet timing), red fireworks & flares, GPS systems, medical brain imaging',
+  Sr:'Red fireworks & emergency flares, glow-in-the-dark paint, toothpaste for sensitive teeth',
+  Y:'White LED phosphors (YAG:Ce), targeted cancer therapy, superconductors, camera lens glass',
+  Zr:'Nuclear reactor fuel rod cladding, dental crowns & implants, heat-resistant ceramics, cubic zirconia gems',
+  Nb:'Superconducting MRI magnets, jet engine alloys, high-strength steel for pipelines, commemorative coins',
+  Mo:'High-speed tool steel, solid lubricant (MoS₂), catalysts in oil refining, stainless steel additive',
+  Tc:'Nuclear medicine gamma-ray imaging (⁹⁹ᵐTc scans), anti-corrosion coatings (research)',
+  Ru:'Catalytic converters, hard disk drive platings, fountain pen nibs, solar-cell dye sensitisers',
+  Rh:'Three-way catalytic converters, jewellery plating (white shine), optical mirrors, spark plug tips',
+  Pd:'Catalytic converters, white-gold jewellery, hydrogen gas purification, electronics connectors',
+  Ag:'Photography (silver halides), electrical contacts & conductors, jewellery, mirrors, antibacterial coatings',
+  Cd:'Rechargeable NiCd batteries, CdTe thin-film solar panels, yellow/orange pigments, nuclear control rods',
+  In:'ITO touchscreens & flat-panel displays, low-temperature solders, semiconductors, mirror coatings',
+  Sn:'Food & drink can lining (tin plate), solder for electronics, bronze alloys, float glass production',
+  Sb:'Flame retardants in plastics & textiles, lead-acid battery grids, semiconductors, yellow pigments',
+  Te:'CdTe solar panels, thermoelectric coolers, free-machining steel additive, rubber compounding',
+  I:'Antiseptic (iodine solution/tincture), thyroid medication (levothyroxine), iodised table salt, photography',
+  Xe:'High-intensity camera flashlamps, ion propulsion engines (spacecraft), anaesthesia, NMR spectroscopy',
+  Cs:'Atomic clocks (GPS, internet, financial systems), photoelectric cells, ion propulsion thrusters',
+  Ba:'Barium meal X-ray contrast agent, green fireworks, oil-well drilling fluid, optical glass',
+  La:'High-refractive camera & telescope lenses, nickel–metal hydride batteries, lighter flints (mischmetall)',
+  Ce:'Catalytic converter washcoats, glass & gemstone polishing, lighter flints, UV-filtering glass',
+  Pr:'Green colour in glass & goggles, neodymium magnet alloy, aircraft engine alloys, fibre-optic amplifiers',
+  Nd:'Neodymium magnets — EV motors, wind turbines, hard drives, headphones, MRI machines',
+  Pm:'Nuclear batteries for pacemakers & spacecraft (⁻ historical), luminescent paint (research only)',
+  Sm:'Samarium-cobalt permanent magnets, cancer targeted therapy, neutron absorption in reactors',
+  Eu:'Red & blue phosphors in TV screens & LED lighting, euro banknote anti-counterfeiting markers',
+  Gd:'MRI contrast agents (gadolinium chelates), nuclear reactor neutron shielding, magneto-optical discs',
+  Tb:'Green phosphors in displays & white LEDs, magnetostrictive alloys, solid oxide fuel cells',
+  Dy:'Additive in NdFeB magnets for high-temperature EV & wind turbine use, nuclear control rods',
+  Ho:'Strongest known artificial magnets (holmium-pole electromagnets), nuclear reactor control rods, lasers',
+  Er:'Erbium-doped fibre amplifiers (EDFA) in internet backbone, pink/rose glass colouring, medical lasers',
+  Tm:'Portable X-ray sources (no electricity needed), thulium lasers (surgery), high-Tc superconductors',
+  Yb:'Optical atomic clocks, fibre-optic amplifiers, stainless steel grain refiner, cancer radiotherapy',
+  Lu:'PET scanner scintillators, LED phosphors, petroleum refinery catalysts (Lu-zeolites)',
+  Hf:'Nuclear reactor control rods, superalloys for jet turbine blades, high-k gate dielectrics in chips',
+  Ta:'Capacitors in mobile phones & laptops, surgical implants & bone repair, jet engine blades, camera lenses',
+  W:'Incandescent bulb filaments, tungsten carbide drill bits & cutting tools, armour-piercing projectiles',
+  Re:'Single-crystal jet turbine blades, platinum–rhenium catalysts, high-temperature thermocouples',
+  Os:'Fountain pen & phonograph needle tips, electrical contacts, fingerprint detection, catalysis',
+  Ir:'Spark plug electrodes, deep-space probe thruster nozzles, compass pivots, fountain pen tips',
+  Pt:'Catalytic converters, platinum jewellery, cisplatin cancer chemotherapy, fuel cell electrodes',
+  Au:'Jewellery & investment, corrosion-proof electrical connectors, dentistry, cancer nanoparticle therapy',
+  Hg:'Fluorescent & CFL bulbs, dental amalgam fillings, thermometers, tilt switches',
+  Tl:'Infrared detectors (Tl₂S), cardiac stress-test imaging, high-refractive-index optical glass',
+  Pb:'Lead-acid car starter batteries, radiation shielding (X-ray rooms), solder, wheel balancing weights',
+  Bi:'Pepto-Bismol (stomach upset medicine), lead-free solder & shot, cosmetics (pearlescent pigment)',
+  Po:'Antistatic brushes for film & printing, nuclear power sources for spacecraft (⁻ small scale)',
+  At:'Targeted alpha-particle cancer therapy (astatine-211) — experimental, extremely rare',
+  Rn:'Radon home-safety monitoring, building geology surveys, cancer radiotherapy (historical)',
+  Fr:'No practical uses — studied only in femtogram quantities in nuclear/atomic physics research',
+  Ra:'Historical luminous watch & instrument dials, cancer radiotherapy (replaced by safer sources)',
+  Ac:'Targeted alpha therapy for cancer (actinium-225), neutron sources for research',
+  Th:'Thorium molten-salt reactor fuel, gas lantern mantles (ThO₂), high-strength magnesium alloys',
+  Pa:'No significant practical uses — studied in nuclear research laboratories only',
+  U:'Nuclear power plant fuel (UO₂ pellets), depleted uranium armour-piercing shells, radiation shielding',
+  Np:'Trace amounts in nuclear research; neptunium-237 used in some neutron detectors',
+  Pu:'Nuclear weapons, RTG power sources on Voyager, Cassini & Curiosity rover',
+  Am:'Ionisation smoke detectors (⁻²⁴¹Am), RTG power for spacecraft, industrial thickness gauges',
+  Cm:'RTG power sources for deep-space probes, nuclear research',
+  Bk:'Scientific research only — produced in microgram amounts',
+  Cf:'Neutron moisture gauges in oil/gas, gold & silver ore assay instruments, cancer brachytherapy',
+  Es:'Scientific research only — produced in sub-microgram amounts',
+  Fm:'Scientific research only',Md:'Scientific research only',
+  No:'Scientific research only',Lr:'Scientific research only',
+};
+
+// ─── CORRECTED Bohr shell capacities ────────────────────────
+// Textbook Bohr model: shell 1=2, shell 2=8, shell 3=8, shell 4=18, shell 5=18, shell 6=32 ...
+const BOHR_SHELL_MAX=[2,8,8,18,18,32,32];
+function shellFill(Z){
+  let rem=Z;
+  const res=[];
+  for(const cap of BOHR_SHELL_MAX){
+    if(rem<=0)break;
+    res.push(Math.min(rem,cap));
+    rem-=Math.min(rem,cap);
+  }
+  return res;
+}
+
+// ─── Animated Bohr SVG ───────────────────────────────────────
+function drawAtom(el){
+  const svg=document.getElementById('atom-diagram');
+  svg.innerHTML='';
+  const ns='http://www.w3.org/2000/svg';
+  const cx=100,cy=100;
+  const shells=shellFill(el.n);
+  const massNum=Math.round(parseFloat(el.mass.replace(/[()]/g,''))||el.n);
+  const protons=el.n;
+  const catColor=CAT_COLORS[el.cat];
+  const catTxt=CAT_TEXT[el.cat];
+  const nucR=shells.length<=2?12:shells.length<=4?15:18;
+
+  // Scale shell radii to always fit 200×200
+  const outerMax=94;
+  const shellRadii=shells.map((_,i)=>{
+    const ideal=nucR+16+(i*16);
+    return Math.min(ideal, nucR+(outerMax-nucR)*((i+1)/shells.length));
+  });
+
+  // Orbit rings (draw before nucleus so nucleus sits on top)
+  shellRadii.forEach(r=>{
+    const o=document.createElementNS(ns,'circle');
+    o.setAttribute('cx',cx);o.setAttribute('cy',cy);o.setAttribute('r',r);
+    o.setAttribute('fill','none');o.setAttribute('stroke','#d4d4d4');o.setAttribute('stroke-width','0.8');
+    svg.appendChild(o);
+  });
+
+  // Nucleus
+  const nuc=document.createElementNS(ns,'circle');
+  nuc.setAttribute('cx',cx);nuc.setAttribute('cy',cy);nuc.setAttribute('r',nucR);
+  nuc.setAttribute('fill',catColor);nuc.setAttribute('stroke',catTxt);nuc.setAttribute('stroke-width','1.2');
+  svg.appendChild(nuc);
+
+  const vOff=nucR>=15?3.5:2.5;
+  function nucText(y,txt,size,weight){
+    const t=document.createElementNS(ns,'text');
+    t.setAttribute('x',cx);t.setAttribute('y',y);
+    t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','middle');
+    t.setAttribute('font-size',size);t.setAttribute('font-weight',weight||'600');
+    t.setAttribute('fill',catTxt);t.setAttribute('font-family','system-ui,sans-serif');
+    t.textContent=txt;svg.appendChild(t);
+  }
+  nucText(cy-vOff,`${protons}p`,'8.5','700');
+  const neutCount=massNum-protons;
+  nucText(cy+vOff+4,`${neutCount<0?'?':neutCount}n`,'7','400');
+
+  // Electrons — KEY FIX:
+  // All electrons on a shell share identical duration.
+  // Each is placed at startAngle = 360*e/count degrees.
+  // The animateTransform rotates from 0→360 (full circle) around the centre,
+  // with begin offset = -(dur * e/count) so they start evenly spread AND stay spread.
+  const SPEEDS=[2.5,4,5.8,8,10.5,14,18];
+  shells.forEach((count,i)=>{
+    const r=shellRadii[i];
+    const dur=SPEEDS[i]||2+(i*2.5);
+    for(let e=0;e<count;e++){
+      const angleDeg=360*e/count;
+      const angleRad=angleDeg*Math.PI/180;
+      const ex=cx+r*Math.cos(angleRad);
+      const ey=cy+r*Math.sin(angleRad);
+
+      const g=document.createElementNS(ns,'g');
+      const anim=document.createElementNS(ns,'animateTransform');
+      anim.setAttribute('attributeName','transform');
+      anim.setAttribute('type','rotate');
+      anim.setAttribute('from',`0 ${cx} ${cy}`);
+      anim.setAttribute('to',`360 ${cx} ${cy}`);
+      anim.setAttribute('dur',`${dur}s`);
+      anim.setAttribute('repeatCount','indefinite');
+      anim.setAttribute('begin',`${(-(dur*e/count)).toFixed(3)}s`);
+
+      const dot=document.createElementNS(ns,'circle');
+      dot.setAttribute('cx',ex);dot.setAttribute('cy',ey);
+      dot.setAttribute('r','4');
+      dot.setAttribute('fill','#4A90D9');
+      dot.setAttribute('stroke','#1a3a6c');
+      dot.setAttribute('stroke-width','0.7');
+
+      g.appendChild(dot);g.appendChild(anim);svg.appendChild(g);
+    }
+  });
+
+  // Shell count label at bottom
+  const lbl=document.createElementNS(ns,'text');
+  lbl.setAttribute('x','100');lbl.setAttribute('y','196');
+  lbl.setAttribute('text-anchor','middle');lbl.setAttribute('font-size','7');lbl.setAttribute('fill','#bbb');
+  lbl.setAttribute('font-family','system-ui,sans-serif');
+  lbl.textContent=`Shells: ${shells.join(', ')}`;
+  svg.appendChild(lbl);
+}
+
+// ─── Wikipedia image ──────────────────────────────────────────
+async function fetchElementImage(el){
+  const img=document.getElementById('el-img');
+  const ph=document.getElementById('el-img-ph');
+  const cap=document.getElementById('el-img-cap');
+  img.style.display='none';ph.style.display='block';ph.textContent='Loading image…';cap.textContent='';
+  try{
+    const d=await(await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(el.name)}`)).json();
+    if(d.thumbnail&&d.thumbnail.source){
+      img.src=d.thumbnail.source;
+      img.onload=()=>{img.style.display='block';ph.style.display='none';};
+      img.onerror=()=>{ph.textContent='No image available';};
+      cap.textContent='📷 Wikipedia';
+    }else{ph.textContent='No image available';}
+  }catch{ph.textContent='Image unavailable';}
+}
+
+// ─── Element modal ────────────────────────────────────────────
+function showPanel(el){
+  document.getElementById('el-num').textContent=el.n;
+  document.getElementById('el-sym').textContent=el.s;
+  document.getElementById('el-sym').style.color=CAT_COLORS[el.cat];
+  document.getElementById('el-name').textContent=el.name;
+  document.getElementById('el-catname').textContent=CAT_LABELS[el.cat];
+  document.getElementById('p-mass').textContent=el.mass+' u';
+  document.getElementById('p-pg').textContent=`${el.period} / ${el.group}`;
+  document.getElementById('p-ec').textContent=el.ec;
+  document.getElementById('p-en').textContent=el.en??'—';
+  document.getElementById('p-bp').textContent=el.bp;
+  document.getElementById('p-mp').textContent=el.mp;
+  document.getElementById('p-uses').textContent=USES[el.s]||'No data available';
+  drawAtom(el);
+  fetchElementImage(el);
+  document.getElementById('el-modal').classList.add('show');
+}
+
+// ─── Multi-select ─────────────────────────────────────────────
+let selectedElements=[];
+function updateCompoundBar(){
+  const bar=document.getElementById('compound-bar');
+  const chips=document.getElementById('compound-selected');
+  chips.innerHTML='';
+  if(selectedElements.length>=2){
+    bar.classList.add('show');
+    selectedElements.forEach(el=>{
+      const chip=document.createElement('span');
+      chip.className='sel-chip';
+      chip.style.background=CAT_COLORS[el.cat];chip.style.color=CAT_TEXT[el.cat];
+      chip.innerHTML=`${el.s} <span class="rm">×</span>`;
+      chip.querySelector('.rm').addEventListener('click',ev=>{ev.stopPropagation();deselectElement(el.n);});
+      chips.appendChild(chip);
+    });
+  }else{bar.classList.remove('show');}
+  document.querySelectorAll('.cell[data-n]').forEach(c=>{
+    c.classList.toggle('selected',!!selectedElements.find(e=>e.n==c.dataset.n));
+  });
+}
+function deselectElement(n){selectedElements=selectedElements.filter(e=>e.n!==n);updateCompoundBar();}
+function clearSelection(){selectedElements=[];updateCompoundBar();}
+function toggleSelect(el){
+  const i=selectedElements.findIndex(e=>e.n===el.n);
+  if(i>-1)selectedElements.splice(i,1);else selectedElements.push(el);
+  updateCompoundBar();
+}
+
+// ─── Compound prediction ──────────────────────────────────────
+function gcd(a,b){return b?gcd(b,a%b):a;}
+function toSub(n){return String(n).split('').map(d=>'₀₁₂₃₄₅₆₇₈₉'[d]).join('');}
+
+function predictCompound(els){
+  const METALS=['alkali-metal','alkaline-earth','transition-metal','post-transition','lanthanide','actinide'];
+  const allMetals=els.every(e=>METALS.includes(e.cat));
+  const hasNoble=els.some(e=>e.cat==='noble-gas'&&![36,54,86].includes(e.n));
+  if(hasNoble)return{formula:'—',name:'No stable compound',bondType:'No bond',bondClass:'bond-ionic',bondDesc:'Noble gases (except Kr, Xe, Rn in rare compounds) do not form stable bonds under normal conditions.',enDiff:'—',noCompound:true};
+  const ens=els.map(e=>e.en).filter(x=>x!=null);
+  const enDiff=ens.length>=2?Math.max(...ens)-Math.min(...ens):0;
+  let bondType,bondClass,bondDesc;
+  if(allMetals){
+    bondType='Metallic bond';bondClass='bond-metallic';
+    bondDesc='All metals: atoms contribute electrons to a shared delocalised "sea", forming an alloy or intermetallic compound.';
+  }else if(enDiff>=1.7){
+    bondType='Ionic bond';bondClass='bond-ionic';
+    bondDesc=`ΔEN = ${enDiff.toFixed(2)} (≥1.7): electrons transfer from the less electronegative atom to the more electronegative one, forming oppositely-charged ions held by strong electrostatic attraction.`;
+  }else if(enDiff>=0.5){
+    bondType='Polar covalent bond';bondClass='bond-covalent';
+    bondDesc=`ΔEN = ${enDiff.toFixed(2)} (0.5–1.7): electrons are shared unequally, creating a dipole — one end is slightly negative (δ−) and the other slightly positive (δ+).`;
+  }else{
+    bondType='Nonpolar covalent bond';bondClass='bond-covalent';
+    bondDesc=`ΔEN = ${enDiff.toFixed(2)} (<0.5): electrons are shared nearly equally between atoms.`;
+  }
+  let formula='',name='';
+  if(els.length===2){
+    const [a,b]=els;
+    const oxA=OXIDATION[a.s]||[1],oxB=OXIDATION[b.s]||[-1];
+    let bestA=oxA[0],bestB=oxB[0];
+    outer:for(const va of oxA)for(const vb of oxB)if(va*vb<0){bestA=va;bestB=vb;break outer;}
+    const g2=gcd(Math.abs(bestA),Math.abs(bestB));
+    let nA=Math.abs(bestB)/g2,nB=Math.abs(bestA)/g2;
+    let cat=a,ani=b,nCat=nA,nAni=nB;
+    const aM=METALS.includes(a.cat),bM=METALS.includes(b.cat);
+    if(bM&&!aM){cat=b;ani=a;nCat=nB;nAni=nA;}
+    else if(!aM&&!bM&&(b.en||0)<(a.en||0)){cat=b;ani=a;nCat=nB;nAni=nA;}
+    formula=`${cat.s}${nCat===1?'':toSub(nCat)}${ani.s}${nAni===1?'':toSub(nAni)}`;
+    name=buildName(cat,ani,nCat,nAni,bondType);
+  }else{formula=els.map(e=>e.s).join('');name='Multi-element compound';}
+  return{formula,name,bondType,bondClass,bondDesc,enDiff:enDiff.toFixed(2)};
+}
+const ANION_SUFFIX={O:'oxide',S:'sulfide',N:'nitride',F:'fluoride',Cl:'chloride',Br:'bromide',I:'iodide',P:'phosphide',H:'hydride',Se:'selenide',Te:'telluride',C:'carbide'};
+const NUM_PFX=['','mono','di','tri','tetra','penta','hexa','hepta','octa','nona','deca'];
+function buildName(cat,ani,nCat,nAni,bondType){
+  const suf=ANION_SUFFIX[ani.s]||(ani.name.toLowerCase().replace(/ine$/,'ide').replace(/ium$/,'ide').replace(/en$/,'ide').replace(/on$/,'ide')+'ide').replace(/ideide$/,'ide');
+  if(bondType.includes('Ionic'))return`${cat.name} ${suf}`;
+  const pC=(nCat===1&&ani.s!=='O')?'':NUM_PFX[nCat]||nCat;
+  const pA=NUM_PFX[nAni]||nAni;
+  return`${pC}${pC?cat.name.toLowerCase():cat.name} ${pA}${suf}`;
+}
+
+// ─── Lewis dot SVG ────────────────────────────────────────────
+function drawLewis(els,pred){
+  if(pred.noCompound||els.length!==2)return'';
+  const ns='http://www.w3.org/2000/svg';
+  const [a,b]=els;
+  const isIonic=pred.bondType.includes('Ionic');
+  const isMetal=pred.bondType.includes('Metallic');
+  if(isMetal)return`<svg viewBox="0 0 300 60" xmlns="${ns}" style="width:100%;max-width:300px;height:60px"><text x="150" y="32" text-anchor="middle" font-size="12" fill="#666" font-family="system-ui,sans-serif">Metallic bonding — delocalised electron sea</text></svg>`;
+
+  const W=300,H=120;
+  const svgEl=document.createElementNS(ns,'svg');
+  svgEl.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svgEl.setAttribute('xmlns',ns);
+  svgEl.setAttribute('style','width:100%;max-width:300px;height:auto');
+
+  function T(x,y,txt,sz,wt,fill){
+    const t=document.createElementNS(ns,'text');
+    t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('text-anchor','middle');
+    t.setAttribute('dominant-baseline','middle');t.setAttribute('font-size',sz||14);
+    t.setAttribute('font-weight',wt||'600');t.setAttribute('fill',fill||'#222');
+    t.setAttribute('font-family','system-ui,sans-serif');t.textContent=txt;return t;
+  }
+  function Dot(x,y){
+    const d=document.createElementNS(ns,'circle');
+    d.setAttribute('cx',x);d.setAttribute('cy',y);d.setAttribute('r','3');
+    d.setAttribute('fill','#222');return d;
+  }
+  // Place dots around a symbol at 8 positions (pairs on each side N,E,S,W)
+  function dotsAround(cx,cy,count,svgTarget){
+    // 8 slot positions (top-left, top-right, right-top, right-bot, bot-right, bot-left, left-bot, left-top)
+    const slots=[[cx-6,cy-20],[cx+6,cy-20],[cx+22,cy-6],[cx+22,cy+6],[cx+6,cy+20],[cx-6,cy+20],[cx-22,cy+6],[cx-22,cy-6]];
+    for(let i=0;i<Math.min(count,8);i++)svgTarget.appendChild(Dot(...slots[i]));
+  }
+
+  const METALS=['alkali-metal','alkaline-earth','transition-metal','post-transition','lanthanide','actinide'];
+  const vA=valenceElectrons(a),vB=valenceElectrons(b);
+
+  if(isIonic){
+    // Determine cation vs anion
+    let cat=a,ani=b,vCat=vA,vAni=vB;
+    if(METALS.includes(b.cat)&&!METALS.includes(a.cat)){cat=b;ani=a;vCat=vB;vAni=vA;}
+    else if(!METALS.includes(a.cat)&&!METALS.includes(b.cat)&&(b.en||0)<(a.en||0)){cat=b;ani=a;vCat=vB;vAni=vA;}
+
+    // Cation — bracket, symbol, no outer electrons, charge
+    const cx1=72,cy1=58;
+    svgEl.appendChild(T(cx1,cy1,cat.s,22,'700',CAT_COLORS[cat.cat]||'#555'));
+    // brackets
+    function bracket(x,cy,open){
+      const t=document.createElementNS(ns,'text');
+      t.setAttribute('x',x);t.setAttribute('y',cy);t.setAttribute('font-size','32');
+      t.setAttribute('dominant-baseline','middle');t.setAttribute('fill','#555');
+      t.setAttribute('font-family','system-ui,sans-serif');t.textContent=open?'[':']';
+      svgEl.appendChild(t);
+    }
+    bracket(44,cy1,true);bracket(90,cy1,false);
+    const catOx=(OXIDATION[cat.s]||[1])[0];
+    const catCharge=catOx>0?`+${catOx}`:String(catOx);
+    svgEl.appendChild(T(96,cy1-20,catCharge,10,'600','#c00'));
+
+    // Arrow
+    svgEl.appendChild(T(150,cy1,'→',22,'400','#999'));
+
+    // Anion — bracket, symbol + all 8 electrons, charge
+    const cx2=228,cy2=58;
+    svgEl.appendChild(T(cx2,cy2,ani.s,22,'700',CAT_COLORS[ani.cat]||'#555'));
+    dotsAround(cx2,cy2,8,svgEl); // anion has full outer shell
+    bracket(200,cy2,true);bracket(248,cy2,false);
+    const aniOx=(OXIDATION[ani.s]||[-1]).find(v=>v<0)||-1;
+    const aniCharge=String(aniOx);
+    svgEl.appendChild(T(254,cy2-20,aniCharge,10,'600','#0077cc'));
+
+    svgEl.appendChild(T(150,H-10,'Electron transferred → ionic bond',9,'400','#999'));
+  }else{
+    // Covalent
+    const sharedPairs=Math.min(4-Math.abs(4-vA),4-Math.abs(4-vB),3)||1;
+    const loneA=Math.max(0,vA-sharedPairs);
+    const loneB=Math.max(0,vB-sharedPairs);
+    const lx=80,rx=220,cy2=58;
+
+    svgEl.appendChild(T(lx,cy2,a.s,22,'700',CAT_COLORS[a.cat]||'#555'));
+    dotsAround(lx,cy2,loneA,svgEl);
+    svgEl.appendChild(T(rx,cy2,b.s,22,'700',CAT_COLORS[b.cat]||'#555'));
+    dotsAround(rx,cy2,loneB,svgEl);
+
+    // Shared dots in middle
+    const midX=(lx+rx)/2;
+    const totalShared=sharedPairs*2;
+    for(let i=0;i<totalShared;i++){
+      const ox=(i-(totalShared-1)/2)*8;
+      svgEl.appendChild(Dot(midX+ox,cy2));
+    }
+    svgEl.appendChild(T(150,H-10,`${sharedPairs} shared electron pair${sharedPairs>1?'s':''} — ${pred.bondType.toLowerCase()}`,9,'400','#999'));
+  }
+
+  const wrap=document.createElement('div');wrap.appendChild(svgEl);return wrap.innerHTML;
+}
+
+// ─── Compound modal ───────────────────────────────────────────
+function showCompoundModal(){
+  if(selectedElements.length<2)return;
+  const pred=predictCompound(selectedElements);
+  const elList=selectedElements.map(e=>`<span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:12px;font-weight:600;background:${CAT_COLORS[e.cat]};color:${CAT_TEXT[e.cat]};margin:2px">${e.s} – ${e.name}</span>`).join(' + ');
+  const enText=pred.enDiff!=='—'?`<div class="c-stat"><div class="c-stat-label">ΔElectronegativity</div><div class="c-stat-val">${pred.enDiff}</div></div>`:'';
+  const lewisHTML=drawLewis(selectedElements,pred);
+  document.getElementById('compound-result').innerHTML=`
+    <div style="margin-bottom:0.75rem;font-size:12px;color:#888">${elList}</div>
+    <div class="compound-formula">${pred.formula}</div>
+    <div class="compound-name">${pred.name}</div>
+    <span class="bond-badge ${pred.bondClass}">${pred.bondType}</span>
+    <div class="compound-details">
+      ${selectedElements.map(e=>`<div class="c-stat"><div class="c-stat-label">${e.name} (${e.s})</div><div class="c-stat-val">EN: ${e.en??'—'} · Valence e⁻: ${valenceElectrons(e)} · Ox: ${(OXIDATION[e.s]||['?']).join(', ')}</div></div>`).join('')}
+      ${enText}
+    </div>
+    <div class="compound-note">${pred.bondDesc}</div>
+    ${lewisHTML?`<div id="lewis-wrap"><h3>Lewis electron dot structure</h3><div id="lewis-svg-wrap">${lewisHTML}</div></div>`:''}
+  `;
+  document.getElementById('compound-modal').classList.add('show');
+}
+
+// ─── Elements data ────────────────────────────────────────────
 const elements=[
   {n:1,s:'H',name:'Hydrogen',cat:'nonmetal',period:1,group:1,mass:'1.008',ec:'1s¹',en:2.20,bp:'-252.9°C',mp:'-259.1°C'},
   {n:2,s:'He',name:'Helium',cat:'noble-gas',period:1,group:18,mass:'4.003',ec:'1s²',en:null,bp:'-268.9°C',mp:'—'},
@@ -364,375 +815,32 @@ const elements=[
   {n:118,s:'Og',name:'Oganesson',cat:'noble-gas',period:7,group:18,mass:'(294)',ec:'[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶',en:null,bp:'—',mp:'—'},
 ];
 
-// ─── Electrons per shell (Bohr model) ───────────────────────
-function shellFill(atomicNum){
-  const shells=[2,8,18,32,18,8,2];
-  let rem=atomicNum;
-  const res=[];
-  for(let c of shells){
-    if(rem<=0)break;
-    const take=Math.min(rem,c);
-    res.push(take);
-    rem-=take;
-  }
-  return res;
-}
-
-// ─── Animated Bohr atom SVG ──────────────────────────────────
-function drawAtom(el){
-  const svg=document.getElementById('atom-diagram');
-  svg.innerHTML='';
-  const ns='http://www.w3.org/2000/svg';
-  const cx=110,cy=110;
-  const shells=shellFill(el.n);
-  const neutrons=Math.round(parseFloat(el.mass)||el.n);
-  const protons=el.n;
-  const catColor=CAT_COLORS[el.cat];
-  const catTxt=CAT_TEXT[el.cat];
-
-  // nucleus
-  const nucR=shells.length<=2?14:shells.length<=4?17:20;
-  const nuc=document.createElementNS(ns,'circle');
-  nuc.setAttribute('cx',cx);nuc.setAttribute('cy',cy);
-  nuc.setAttribute('r',nucR);
-  nuc.setAttribute('fill',catColor);
-  nuc.setAttribute('stroke',catTxt);
-  nuc.setAttribute('stroke-width','1');
-  svg.appendChild(nuc);
-
-  // nucleus label
-  const ntxt=document.createElementNS(ns,'text');
-  ntxt.setAttribute('x',cx);ntxt.setAttribute('y',cy+1);
-  ntxt.setAttribute('text-anchor','middle');ntxt.setAttribute('dominant-baseline','middle');
-  ntxt.setAttribute('font-size','9');ntxt.setAttribute('fill',catTxt);ntxt.setAttribute('font-weight','600');
-  ntxt.textContent=`${protons}p`;
-  svg.appendChild(ntxt);
-  const ntxt2=document.createElementNS(ns,'text');
-  ntxt2.setAttribute('x',cx);ntxt2.setAttribute('y',cy+10);
-  ntxt2.setAttribute('text-anchor','middle');ntxt2.setAttribute('dominant-baseline','middle');
-  ntxt2.setAttribute('font-size','7.5');ntxt2.setAttribute('fill',catTxt);
-  ntxt2.textContent=`${neutrons-protons<0?'?':neutrons-protons}n`;
-  svg.appendChild(ntxt2);
-
-  // orbit ring + electrons
-  const speeds=[3.5,4.5,5.5,7,8.5,10,12];
-  shells.forEach((count,i)=>{
-    const r=nucR+14+(i*20);
-    const orbit=document.createElementNS(ns,'circle');
-    orbit.setAttribute('cx',cx);orbit.setAttribute('cy',cy);
-    orbit.setAttribute('r',r);
-    orbit.setAttribute('fill','none');
-    orbit.setAttribute('stroke','#ccc');
-    orbit.setAttribute('stroke-width','0.5');
-    svg.appendChild(orbit);
-
-    for(let e=0;e<count;e++){
-      const startAngle=(2*Math.PI*e/count);
-      const ex=cx+r*Math.cos(startAngle);
-      const ey=cy+r*Math.sin(startAngle);
-      const g=document.createElementNS(ns,'g');
-      // animate around center
-      const dur=speeds[i]||3+(i*1.5);
-      const animEl=document.createElementNS(ns,'animateTransform');
-      animEl.setAttribute('attributeName','transform');
-      animEl.setAttribute('type','rotate');
-      animEl.setAttribute('from',`${(360*e/count)} ${cx} ${cy}`);
-      animEl.setAttribute('to',`${(360*e/count)+360} ${cx} ${cy}`);
-      animEl.setAttribute('dur',dur+'s');
-      animEl.setAttribute('repeatCount','indefinite');
-
-      const edot=document.createElementNS(ns,'circle');
-      edot.setAttribute('cx',ex);edot.setAttribute('cy',ey);
-      edot.setAttribute('r','3.5');
-      edot.setAttribute('fill','#378ADD');
-      edot.setAttribute('stroke','#042C53');
-      edot.setAttribute('stroke-width','0.5');
-
-      g.appendChild(edot);
-      g.appendChild(animEl);
-      svg.appendChild(g);
-    }
-  });
-
-  // element symbol in corner
-  const syml=document.createElementNS(ns,'text');
-  syml.setAttribute('x','6');syml.setAttribute('y','16');
-  syml.setAttribute('font-size','13');syml.setAttribute('font-weight','700');
-  syml.setAttribute('fill','#555');
-  syml.textContent=el.s;
-  svg.appendChild(syml);
-
-  // legend
-  const lg1=document.createElementNS(ns,'circle');
-  lg1.setAttribute('cx','6');lg1.setAttribute('cy','206');lg1.setAttribute('r','4');
-  lg1.setAttribute('fill',catColor);lg1.setAttribute('stroke',catTxt);lg1.setAttribute('stroke-width','0.5');
-  svg.appendChild(lg1);
-  const lt1=document.createElementNS(ns,'text');
-  lt1.setAttribute('x','13');lt1.setAttribute('y','210');lt1.setAttribute('font-size','7');lt1.setAttribute('fill','#888');
-  lt1.textContent='protons/neutrons';svg.appendChild(lt1);
-
-  const lg2=document.createElementNS(ns,'circle');
-  lg2.setAttribute('cx','6');lg2.setAttribute('cy','216');lg2.setAttribute('r','3.5');
-  lg2.setAttribute('fill','#378ADD');lg2.setAttribute('stroke','#042C53');lg2.setAttribute('stroke-width','0.5');
-  svg.appendChild(lg2);
-  const lt2=document.createElementNS(ns,'text');
-  lt2.setAttribute('x','13');lt2.setAttribute('y','219');lt2.setAttribute('font-size','7');lt2.setAttribute('fill','#888');
-  lt2.textContent='electrons';svg.appendChild(lt2);
-}
-
-// ─── Wikipedia image fetch ────────────────────────────────────
-async function fetchElementImage(el){
-  const img=document.getElementById('element-image');
-  const ph=document.getElementById('element-image-placeholder');
-  const cap=document.getElementById('image-caption');
-  img.style.display='none';
-  ph.style.display='block';
-  ph.textContent='Loading image…';
-  cap.textContent='';
-  try{
-    const url=`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(el.name)}`;
-    const r=await fetch(url);
-    const d=await r.json();
-    if(d.thumbnail&&d.thumbnail.source){
-      img.src=d.thumbnail.source;
-      img.onload=()=>{img.style.display='block';ph.style.display='none';};
-      img.onerror=()=>{ph.textContent='No image available';};
-      cap.textContent='Image: Wikipedia';
-    }else{
-      ph.textContent='No image available';
-    }
-  }catch(e){
-    ph.textContent='Image unavailable';
-  }
-}
-
-// ─── Multi-select state ───────────────────────────────────────
-let selectedElements=[];
-
-function updateCompoundBar(){
-  const bar=document.getElementById('compound-bar');
-  const chips=document.getElementById('compound-selected');
-  chips.innerHTML='';
-  if(selectedElements.length>=2){
-    bar.classList.add('show');
-    selectedElements.forEach(el=>{
-      const chip=document.createElement('span');
-      chip.className='sel-chip';
-      chip.style.background=CAT_COLORS[el.cat];
-      chip.style.color=CAT_TEXT[el.cat];
-      chip.innerHTML=`${el.s} <span class="rm" data-n="${el.n}">×</span>`;
-      chip.querySelector('.rm').addEventListener('click',e=>{
-        e.stopPropagation();
-        deselectElement(el.n);
-      });
-      chips.appendChild(chip);
-    });
-  }else{
-    bar.classList.remove('show');
-  }
-  // update cell highlights
-  document.querySelectorAll('.cell[data-n]').forEach(c=>{
-    if(selectedElements.find(e=>e.n==c.dataset.n)){c.classList.add('selected');}
-    else{c.classList.remove('selected');}
-  });
-}
-
-function deselectElement(n){
-  selectedElements=selectedElements.filter(e=>e.n!==n);
-  updateCompoundBar();
-}
-
-function toggleSelect(el){
-  const idx=selectedElements.findIndex(e=>e.n===el.n);
-  if(idx>-1){selectedElements.splice(idx,1);}
-  else{selectedElements.push(el);}
-  updateCompoundBar();
-}
-
-// ─── Compound prediction ──────────────────────────────────────
-function gcd(a,b){return b?gcd(b,a%b):a;}
-
-function predictCompound(els){
-  // Determine bond type from electronegativity difference
-  const metals=['alkali-metal','alkaline-earth','transition-metal','post-transition','lanthanide','actinide'];
-  const nonmetals=['nonmetal','halogen','noble-gas'];
-  const allMetals=els.every(e=>metals.includes(e.cat));
-  const allNonMetal=els.every(e=>nonmetals.includes(e.cat)||e.cat==='metalloid');
-  const hasNoble=els.some(e=>e.cat==='noble-gas'&&e.n!==36&&e.n!==54);
-
-  let bondType,bondClass,bondDesc;
-
-  if(hasNoble&&els.some(e=>e.cat!=='noble-gas')){
-    bondType='Typically no bond';bondClass='bond-ionic';
-    bondDesc='Noble gases (except Xe and Kr in rare compounds) do not typically form stable chemical bonds.';
-    return{formula:'—',name:'No stable compound',bondType,bondClass,bondDesc,note:bondDesc};
-  }
-
-  const ens=els.map(e=>e.en).filter(x=>x!==null);
-  let enDiff=0;
-  if(ens.length>=2){
-    enDiff=Math.max(...ens)-Math.min(...ens);
-  }
-
-  if(allMetals){
-    bondType='Metallic bond';bondClass='bond-metallic';
-    bondDesc='Metal atoms share a "sea" of delocalized electrons, forming an alloy or intermetallic compound.';
-  }else if(enDiff>=1.7){
-    bondType='Ionic bond';bondClass='bond-ionic';
-    bondDesc='Large electronegativity difference (Δ≥1.7) — electrons are transferred from the less electronegative atom to the more electronegative one, forming oppositely charged ions.';
-  }else if(enDiff>=0.5){
-    bondType='Polar covalent bond';bondClass='bond-covalent';
-    bondDesc='Moderate electronegativity difference — electrons are shared but unequally, creating a dipole.';
-  }else{
-    bondType='Nonpolar covalent bond';bondClass='bond-covalent';
-    bondDesc='Similar electronegativities — electrons are shared nearly equally between atoms.';
-  }
-
-  // Build formula from oxidation states (simple ionic/covalent balancing)
-  let formula='',name='';
-  if(els.length===2){
-    const [a,b]=els;
-    const oxA=OXIDATION[a.s];
-    const oxB=OXIDATION[b.s];
-    if(oxA&&oxB){
-      // find matching oxidation states that cancel
-      let bestA=oxA[0],bestB=oxB[0];
-      outer:for(let va of oxA){
-        for(let vb of oxB){
-          if(va*vb<0){bestA=va;bestB=vb;break outer;}
-        }
-      }
-      const posV=bestA>0?bestA:-bestA;
-      const negV=bestB<0?-bestB:bestB;
-      const g=gcd(posV,negV);
-      const nA=negV/g, nB=posV/g;
-      // determine which is cation (lower en or metal)
-      let cation=a,anion=b,nCat=nA,nAn=nB;
-      if((b.en||0)<(a.en||0)&&metals.includes(b.cat)){
-        cation=b;anion=a;nCat=nB;nAn=nA;
-      }
-      const subCat=nCat===1?'':toSubscript(nCat);
-      const subAn=nAn===1?'':toSubscript(nAn);
-      formula=`${cation.s}${subCat}${anion.s}${subAn}`;
-      name=buildName(cation,anion,nCat,nAn,bondType);
-    }else{
-      formula=els.map(e=>e.s).join('');
-      name=els.map(e=>e.name).join(' compound');
-    }
-  }else{
-    // 3+ elements: just concatenate with balanced counts if possible
-    formula=els.map(e=>e.s).join('');
-    name='Multi-element compound';
-  }
-
-  return{formula,name,bondType,bondClass,bondDesc,enDiff:enDiff.toFixed(2)};
-}
-
-function toSubscript(n){
-  return String(n).split('').map(d=>'₀₁₂₃₄₅₆₇₈₉'[d]).join('');
-}
-
-function buildName(cat,an,nCat,nAn,bondType){
-  // Common IUPAC-ish naming
-  const prefixes=['','mono','di','tri','tetra','penta','hexa','hepta','octa','nona','deca'];
-  const anionSuffixes={
-    'O':'oxide','S':'sulfide','N':'nitride','F':'fluoride','Cl':'chloride',
-    'Br':'bromide','I':'iodide','P':'phosphide','C':'carbide','H':'hydride',
-    'Se':'selenide','Te':'telluride'
-  };
-  const anSuf=anionSuffixes[an.s]||(an.name.toLowerCase().replace(/ine$/,'ide').replace(/ium$/,'ide').replace(/en$/,'ide')+'ide').replace('ideide','ide');
-  if(bondType.includes('Ionic')){
-    return `${cat.name} ${anSuf}`;
-  }else{
-    const pCat=nCat===1&&an.s!=='O'?'':prefixes[nCat]||nCat;
-    const pAn=prefixes[nAn]||nAn;
-    return `${pCat}${pCat?cat.name.toLowerCase():cat.name} ${pAn}${anSuf}`;
-  }
-}
-
-function showCompoundModal(){
-  if(selectedElements.length<2)return;
-  const pred=predictCompound(selectedElements);
-  const res=document.getElementById('compound-result');
-  const enText=pred.enDiff!==undefined?`<div class="c-stat"><div class="c-stat-label">ΔElectronegativity</div><div class="c-stat-val">${pred.enDiff}</div></div>`:'';
-  const elList=selectedElements.map(e=>`<span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:12px;font-weight:600;background:${CAT_COLORS[e.cat]};color:${CAT_TEXT[e.cat]};margin:2px">${e.s} – ${e.name}</span>`).join(' + ');
-  res.innerHTML=`
-    <div style="margin-bottom:0.75rem;font-size:12px;color:#888">${elList}</div>
-    <div class="compound-formula">${pred.formula}</div>
-    <div class="compound-name">${pred.name}</div>
-    <span class="bond-badge ${pred.bondClass}">${pred.bondType}</span>
-    <div class="compound-details">
-      ${selectedElements.map(e=>`<div class="c-stat"><div class="c-stat-label">${e.name} (${e.s})</div><div class="c-stat-val">EN: ${e.en??'—'} · Ox: ${(OXIDATION[e.s]||['?']).join(', ')}</div></div>`).join('')}
-      ${enText}
-    </div>
-    <div class="compound-note">${pred.bondDesc}</div>
-  `;
-  document.getElementById('compound-modal').classList.add('show');
-}
-
-// ─── Panel ────────────────────────────────────────────────────
-function showPanel(el){
-  document.getElementById('panel-num').textContent=el.n;
-  document.getElementById('panel-sym').textContent=el.s;
-  document.getElementById('panel-sym').style.color=CAT_COLORS[el.cat];
-  document.getElementById('panel-name').textContent=el.name;
-  document.getElementById('panel-cat').textContent=CAT_LABELS[el.cat];
-  document.getElementById('p-mass').textContent=el.mass+' u';
-  document.getElementById('p-pg').textContent=el.period+' / '+el.group;
-  document.getElementById('p-ec').textContent=el.ec;
-  document.getElementById('p-en').textContent=el.en??'—';
-  document.getElementById('p-bp').textContent=el.bp;
-  document.getElementById('p-mp').textContent=el.mp;
-  drawAtom(el);
-  fetchElementImage(el);
-  const panel=document.getElementById('panel');
-  panel.style.display='block';
-  panel.scrollIntoView({behavior:'smooth',block:'start'});
-}
-
 // ─── Grid ─────────────────────────────────────────────────────
-function getRow(el){
-  if(el.period===8)return 9;
-  if(el.period===9)return 10;
-  return el.period;
-}
-
+function getRow(el){if(el.period===8)return 9;if(el.period===9)return 10;return el.period;}
 function makeGrid(){
   const grid=document.getElementById('pt-grid');
   const byPos={};
   elements.forEach(el=>byPos[`${getRow(el)}-${el.group}`]=el);
-
   for(let r=1;r<=10;r++){
-    const startCol=(r===9||r===10)?3:1;
+    const sc=(r===9||r===10)?3:1;
     if(r===9||r===10){
-      const lbl=document.createElement('div');
-      lbl.className='lbl';
+      const lbl=document.createElement('div');lbl.className='lbl';
       lbl.style.cssText=`grid-column:1/3;grid-row:${r}`;
-      lbl.textContent=r===9?'Lanthanides →':'Actinides →';
-      grid.appendChild(lbl);
+      lbl.textContent=r===9?'Lanthanides →':'Actinides →';grid.appendChild(lbl);
     }
-    for(let c=startCol;c<=18;c++){
+    for(let c=sc;c<=18;c++){
       const el=byPos[`${r}-${c}`];
       const div=document.createElement('div');
       div.style.cssText=`grid-column:${c};grid-row:${r}`;
       if(el){
-        div.className='cell';
-        div.dataset.cat=el.cat;
-        div.dataset.n=el.n;
-        div.style.background=CAT_COLORS[el.cat];
-        div.style.color=CAT_TEXT[el.cat];
+        div.className='cell';div.dataset.cat=el.cat;div.dataset.n=el.n;
+        div.style.background=CAT_COLORS[el.cat];div.style.color=CAT_TEXT[el.cat];
         div.innerHTML=`<span class="num">${el.n}</span><span class="sym">${el.s}</span>`;
-        div.title=el.name+' (click: info, Shift+click: select for compound)';
+        div.title=`${el.name} — click for info · Shift+click to select for compound`;
         div.addEventListener('click',e=>{
-          if(e.shiftKey||e.ctrlKey||e.metaKey){
-            toggleSelect(el);
-          }else{
-            showPanel(el);
-          }
+          if(e.shiftKey||e.ctrlKey||e.metaKey)toggleSelect(el);else showPanel(el);
         });
-      }else{
-        div.className='cell empty';
-      }
+      }else{div.className='cell empty';}
       grid.appendChild(div);
     }
   }
@@ -742,55 +850,39 @@ function makeGrid(){
 function makeLegend(){
   const leg=document.getElementById('legend');
   Object.entries(CAT_LABELS).forEach(([cat,label])=>{
-    const item=document.createElement('div');
-    item.className='leg-item';
+    const item=document.createElement('div');item.className='leg-item';
     item.innerHTML=`<div class="leg-dot" style="background:${CAT_COLORS[cat]}"></div><span>${label}</span>`;
     leg.appendChild(item);
   });
 }
 
-
-// ─── Event listeners ──────────────────────────────────────────
+// ─── Event wiring ─────────────────────────────────────────────
 document.querySelectorAll('.filter-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
     document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     const cat=btn.dataset.cat;
     document.querySelectorAll('.cell[data-cat]').forEach(cell=>{
-      if(cat==='all'||cell.dataset.cat===cat)cell.classList.remove('dim');
-      else cell.classList.add('dim');
+      cell.classList.toggle('dim',cat!=='all'&&cell.dataset.cat!==cat);
     });
   });
 });
 
-document.getElementById('close-panel').addEventListener('click',()=>{
-  document.getElementById('panel').style.display='none';
-});
+document.getElementById('el-close').addEventListener('click',()=>document.getElementById('el-modal').classList.remove('show'));
+document.getElementById('el-modal').addEventListener('click',e=>{if(e.target.id==='el-modal')document.getElementById('el-modal').classList.remove('show');});
+
 document.getElementById('predict-btn').addEventListener('click',showCompoundModal);
-document.getElementById('clear-sel-btn').addEventListener('click',()=>{
-  selectedElements=[];updateCompoundBar();
-});
-document.getElementById('compound-close').addEventListener('click',()=>{
-  document.getElementById('compound-modal').classList.remove('show');
-});
-document.getElementById('compound-modal').addEventListener('click',e=>{
-  if(e.target===document.getElementById('compound-modal'))
-    document.getElementById('compound-modal').classList.remove('show');
-});
+document.getElementById('clear-sel-btn').addEventListener('click',clearSelection);
 
-// ─── Display toggles ─────────────────────────────────────────
-document.getElementById('tog-nums').addEventListener('change',function(){
-  document.getElementById('pt-grid').classList.toggle('hide-nums',!this.checked);
-});
-document.getElementById('tog-syms').addEventListener('change',function(){
-  document.getElementById('pt-grid').classList.toggle('hide-syms',!this.checked);
-});
-document.getElementById('tog-colors').addEventListener('change',function(){
-  document.getElementById('pt-grid').classList.toggle('hide-colors',!this.checked);
-});
+function closeCompound(){document.getElementById('compound-modal').classList.remove('show');clearSelection();}
+document.getElementById('compound-close').addEventListener('click',closeCompound);
+document.getElementById('compound-modal').addEventListener('click',e=>{if(e.target.id==='compound-modal')closeCompound();});
 
-makeGrid();
-makeLegend();
+document.getElementById('tog-nums').addEventListener('change',function(){document.getElementById('pt-grid').classList.toggle('hide-nums',!this.checked);});
+document.getElementById('tog-syms').addEventListener('change',function(){document.getElementById('pt-grid').classList.toggle('hide-syms',!this.checked);});
+document.getElementById('tog-colors').addEventListener('change',function(){document.getElementById('pt-grid').classList.toggle('hide-colors',!this.checked);});
+
+makeGrid();makeLegend();
 </script>
 </body>
 </html>
