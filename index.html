@@ -111,9 +111,11 @@ h1{font-size:1.4rem;font-weight:500;margin-bottom:0.75rem;color:#333}
 .c-stat-label{font-size:11px;color:#888}
 .c-stat-val{font-size:12px;font-weight:500;margin-top:2px}
 .compound-note{font-size:12px;color:#777;margin-top:0.75rem;line-height:1.55;background:#f9f8f5;border-radius:8px;padding:0.6rem 0.75rem}
-#lewis-wrap{margin-top:1rem}
-#lewis-wrap h3{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;font-weight:600}
-#lewis-svg-wrap{display:flex;justify-content:center;background:#fafaf8;border-radius:10px;padding:0.75rem;border:1px solid #eee}
+#mol3d-wrap{margin-top:1rem}
+#mol3d-wrap h3{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;font-weight:600}
+#mol3d-canvas-wrap{border-radius:10px;overflow:hidden;background:#0d1117;border:1px solid #222;position:relative;height:240px}
+#mol3d-canvas-wrap canvas{display:block;width:100%!important;height:240px!important}
+#mol3d-hint{position:absolute;bottom:6px;right:8px;font-size:10px;color:rgba(255,255,255,0.35);pointer-events:none}
 </style>
 </head>
 <body>
@@ -211,6 +213,7 @@ h1{font-size:1.4rem;font-weight:500;margin-bottom:0.75rem;color:#333}
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const CAT_COLORS={
   'alkali-metal':'#FAC775','alkaline-earth':'#F0997B','transition-metal':'#85B7EB',
@@ -368,16 +371,19 @@ const USES={
   Og:'Oganesson has no practical applications. Named after physicist Yuri Oganessian, it is the heaviest known element and the last on the periodic table. Only 5 atoms have ever been confirmed, with a half-life of less than 1 millisecond. Theoretical models suggest it may not behave as a noble gas at all, due to extreme relativistic quantum effects that may give it a solid state at room temperature — challenging our understanding of the periodic law itself.',
 };
 
-// ─── CORRECTED Bohr shell capacities ────────────────────────
-// Textbook Bohr model: shell 1=2, shell 2=8, shell 3=8, shell 4=18, shell 5=18, shell 6=32 ...
-const BOHR_SHELL_MAX=[2,8,8,18,18,32,32];
-function shellFill(Z){
-  let rem=Z;
-  const res=[];
-  for(const cap of BOHR_SHELL_MAX){
-    if(rem<=0)break;
-    res.push(Math.min(rem,cap));
-    rem-=Math.min(rem,cap);
+// ─── Bohr shell fill ─────────────────────────────────────────
+// Textbook high-school Bohr model shell capacities:
+// K=2, L=8, M=8 (fills to 8 before shell 4 starts), N=18, O=18, P=32, Q=2
+// This gives correct diagrams for all elements: Mg=2,8,2  K=2,8,8,1  Br=2,8,8,17 etc.
+const BOHR_SHELL_MAX = [2, 8, 8, 18, 18, 32, 2];
+function shellFill(Z) {
+  let rem = Z;
+  const res = [];
+  for (const cap of BOHR_SHELL_MAX) {
+    if (rem <= 0) break;
+    const take = Math.min(rem, cap);
+    res.push(take);
+    rem -= take;
   }
   return res;
 }
@@ -429,39 +435,46 @@ function drawAtom(el){
   const neutCount=massNum-protons;
   nucText(cy+vOff+4,`${neutCount<0?'?':neutCount}n`,'7','400');
 
-  // Electrons — KEY FIX:
-  // All electrons on a shell share identical duration.
-  // Each is placed at startAngle = 360*e/count degrees.
-  // The animateTransform rotates from 0→360 (full circle) around the centre,
-  // with begin offset = -(dur * e/count) so they start evenly spread AND stay spread.
-  const SPEEDS=[2.5,4,5.8,8,10.5,14,18];
-  shells.forEach((count,i)=>{
-    const r=shellRadii[i];
-    const dur=SPEEDS[i]||2+(i*2.5);
-    for(let e=0;e<count;e++){
-      const angleDeg=360*e/count;
-      const angleRad=angleDeg*Math.PI/180;
-      const ex=cx+r*Math.cos(angleRad);
-      const ey=cy+r*Math.sin(angleRad);
+  // ── Electrons ──────────────────────────────────────────────
+  // KEY: encode each electron's starting angle directly into the from/to
+  // values of animateTransform. All electrons on the same shell share the
+  // same period (dur), so rotating from startAngle→startAngle+360 keeps
+  // them permanently evenly spaced — no negative begin offsets needed.
+  const SPEEDS = [2.5, 4.2, 6.0, 8.5, 11, 14, 18];
+  shells.forEach((count, i) => {
+    const r = shellRadii[i];
+    const dur = SPEEDS[i] || 2 + i * 2.5;
+    for (let e = 0; e < count; e++) {
+      const startDeg = (360 * e) / count;          // evenly spaced start angle
+      const startRad = (startDeg * Math.PI) / 180;
+      const ex = cx + r * Math.cos(startRad);
+      const ey = cy + r * Math.sin(startRad);
 
-      const g=document.createElementNS(ns,'g');
-      const anim=document.createElementNS(ns,'animateTransform');
-      anim.setAttribute('attributeName','transform');
-      anim.setAttribute('type','rotate');
-      anim.setAttribute('from',`0 ${cx} ${cy}`);
-      anim.setAttribute('to',`360 ${cx} ${cy}`);
-      anim.setAttribute('dur',`${dur}s`);
-      anim.setAttribute('repeatCount','indefinite');
-      anim.setAttribute('begin',`${(-(dur*e/count)).toFixed(3)}s`);
+      const g = document.createElementNS(ns, 'g');
 
-      const dot=document.createElementNS(ns,'circle');
-      dot.setAttribute('cx',ex);dot.setAttribute('cy',ey);
-      dot.setAttribute('r','4');
-      dot.setAttribute('fill','#4A90D9');
-      dot.setAttribute('stroke','#1a3a6c');
-      dot.setAttribute('stroke-width','0.7');
+      // Rotate the whole group around the SVG centre.
+      // from = startDeg, to = startDeg+360  →  one full lap per dur seconds.
+      // Because all electrons on this shell have the same dur they stay
+      // perfectly spaced forever, regardless of browser behaviour.
+      const anim = document.createElementNS(ns, 'animateTransform');
+      anim.setAttribute('attributeName', 'transform');
+      anim.setAttribute('type', 'rotate');
+      anim.setAttribute('from', `${startDeg} ${cx} ${cy}`);
+      anim.setAttribute('to', `${startDeg + 360} ${cx} ${cy}`);
+      anim.setAttribute('dur', `${dur}s`);
+      anim.setAttribute('repeatCount', 'indefinite');
 
-      g.appendChild(dot);g.appendChild(anim);svg.appendChild(g);
+      const dot = document.createElementNS(ns, 'circle');
+      dot.setAttribute('cx', ex);
+      dot.setAttribute('cy', ey);
+      dot.setAttribute('r', '4');
+      dot.setAttribute('fill', '#4A90D9');
+      dot.setAttribute('stroke', '#1a3a6c');
+      dot.setAttribute('stroke-width', '0.7');
+
+      g.appendChild(dot);
+      g.appendChild(anim);
+      svg.appendChild(g);
     }
   });
 
@@ -701,12 +714,214 @@ function drawLewis(els,pred){
 }
 
 // ─── Compound modal ───────────────────────────────────────────
+// ─── 3D Molecule viewer (Three.js) ───────────────────────────
+// Atom radius and colour lookup (CPK colouring)
+const CPK_COLOR = {
+  H:'#ffffff', C:'#404040', N:'#3050f8', O:'#ff0d0d', F:'#90e050',
+  Cl:'#1ff01f', Br:'#a62929', I:'#940094', S:'#ffff30', P:'#ff8000',
+  Na:'#ab5cf2', K:'#8f40d4', Ca:'#3dff00', Mg:'#8aff00', Fe:'#e06633',
+  Cu:'#c88033', Zn:'#7d80b0', Al:'#bfa6a6', Si:'#f0c8a0', Li:'#cc80ff',
+};
+const CPK_RADIUS = {
+  H:0.31, C:0.77, N:0.75, O:0.73, F:0.71, Cl:1.02, Br:1.20,
+  I:1.39, S:1.03, P:1.07, Na:1.86, K:2.27, Ca:1.97, Mg:1.60,
+  Fe:1.56, Cu:1.45, Zn:1.42, Al:1.43, Si:1.17, Li:1.52,
+};
+function getCpkColor(sym){ return CPK_COLOR[sym]||'#cccccc'; }
+function getCpkRadius(sym){ return (CPK_RADIUS[sym]||1.0)*0.55; }
+
+// Geometry descriptors for common 2-element compounds
+// Returns array of {sym, pos:[x,y,z]} and bonds array of [i,j]
+function getMolGeometry(els, pred) {
+  if (pred.noCompound) return null;
+  const [a, b] = els;
+  const isIonic = pred.bondType.includes('Ionic');
+  const isMetal = pred.bondType.includes('Metallic');
+
+  // For ionic: show a small crystal-like cluster (2×2×2)
+  if (isIonic) {
+    const METALS=['alkali-metal','alkaline-earth','transition-metal','post-transition','lanthanide','actinide'];
+    const cat = METALS.includes(a.cat) ? a : b;
+    const ani = cat === a ? b : a;
+    // 2×2×2 NaCl-type lattice
+    const atoms = [];
+    const bonds = [];
+    for (let x=0;x<2;x++) for (let y=0;y<2;y++) for (let z=0;z<2;z++) {
+      const parity = (x+y+z)%2;
+      atoms.push({ sym: parity===0 ? cat.s : ani.s, pos:[x*1.8-0.9, y*1.8-0.9, z*1.8-0.9] });
+    }
+    // bonds between adjacent atoms
+    for (let i=0;i<atoms.length;i++) {
+      for (let j=i+1;j<atoms.length;j++) {
+        const dx=atoms[i].pos[0]-atoms[j].pos[0];
+        const dy=atoms[i].pos[1]-atoms[j].pos[1];
+        const dz=atoms[i].pos[2]-atoms[j].pos[2];
+        const d=Math.sqrt(dx*dx+dy*dy+dz*dz);
+        if (d<2.0) bonds.push([i,j]);
+      }
+    }
+    return { atoms, bonds, title: `${pred.formula} ionic lattice` };
+  }
+
+  if (isMetal) {
+    // Simple FCC cluster of 5 atoms
+    const atoms=[
+      {sym:a.s,pos:[0,0,0]},
+      {sym:b.s,pos:[1.5,0,0]},{sym:b.s,pos:[-1.5,0,0]},
+      {sym:b.s,pos:[0,1.5,0]},{sym:b.s,pos:[0,-1.5,0]},
+    ];
+    const bonds=[[0,1],[0,2],[0,3],[0,4]];
+    return { atoms, bonds, title:`${pred.formula} metallic cluster` };
+  }
+
+  // Covalent — build geometry from valence
+  const vA=valenceElectrons(a), vB=valenceElectrons(b);
+  // Number of bonds between A and B in the simplest formula
+  const METALS2=['alkali-metal','alkaline-earth','transition-metal','post-transition','lanthanide','actinide'];
+  let cat2=a,ani2=b,nCat=1,nAni=1;
+  const oxA=OXIDATION[a.s]||[1], oxB=OXIDATION[b.s]||[-1];
+  let bestA=oxA[0],bestB=oxB[0];
+  outer2:for(const va of oxA) for(const vb of oxB) if(va*vb<0){bestA=va;bestB=vb;break outer2;}
+  const g2=gcd(Math.abs(bestA),Math.abs(bestB));
+  nCat=Math.abs(bestB)/g2; nAni=Math.abs(bestA)/g2;
+  if(METALS2.includes(b.cat)&&!METALS2.includes(a.cat)){cat2=b;ani2=a;[nCat,nAni]=[nAni,nCat];}
+
+  // Arrange: central atom (fewer, typically more metallic) surrounded by others
+  // Use tetrahedral/trigonal/linear geometry based on count
+  const central=nAni>nCat?cat2:ani2;
+  const outer=central===cat2?ani2:cat2;
+  const outerCount=central===cat2?nAni:nCat;
+  const bondLen=getCpkRadius(central.s)+getCpkRadius(outer.s)+0.4;
+
+  const angles={ // ideal bond angles by coordination number
+    1:[0], 2:[0,180], 3:[0,120,240], 4:[0,109.5,219,329],
+    5:[0,72,144,216,288], 6:[0,60,120,180,240,300],
+  };
+  const ang=angles[outerCount]||angles[4];
+
+  const atoms=[{sym:central.s,pos:[0,0,0]}];
+  const bonds=[];
+  for(let i=0;i<outerCount;i++){
+    const a2=((ang[i]||i*360/outerCount)*Math.PI)/180;
+    const tilt=(outerCount===4)?(i%2===0?0.6:-0.6):0;
+    atoms.push({sym:outer.s,pos:[bondLen*Math.cos(a2), bondLen*Math.sin(a2), tilt*bondLen*0.6]});
+    bonds.push([0,i+1]);
+  }
+  return { atoms, bonds, title:`${pred.formula} molecule` };
+}
+
+let mol3dRenderer=null, mol3dAnimId=null;
+function destroyMol3d(){
+  if(mol3dAnimId){cancelAnimationFrame(mol3dAnimId);mol3dAnimId=null;}
+  if(mol3dRenderer){mol3dRenderer.dispose();mol3dRenderer=null;}
+}
+
+function drawMolecule3D(els, pred){
+  destroyMol3d();
+  const geo=getMolGeometry(els,pred);
+  if(!geo||typeof THREE==='undefined') return '';
+
+  // Inject canvas container — THREE will render into it after DOM insert
+  const id='mol3d-canvas-'+Date.now();
+  setTimeout(()=>{
+    const wrap=document.getElementById(id);
+    if(!wrap)return;
+    const W=wrap.clientWidth||480, H=240;
+
+    const scene=new THREE.Scene();
+    scene.background=new THREE.Color(0x0d1117);
+
+    const camera=new THREE.PerspectiveCamera(45,W/H,0.1,100);
+    camera.position.set(0,0,8);
+
+    const renderer=new THREE.WebGLRenderer({antialias:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    renderer.setSize(W,H);
+    wrap.appendChild(renderer.domElement);
+    mol3dRenderer=renderer;
+
+    // Lighting
+    scene.add(new THREE.AmbientLight(0xffffff,0.5));
+    const dl=new THREE.DirectionalLight(0xffffff,0.9);
+    dl.position.set(5,8,5);scene.add(dl);
+    const dl2=new THREE.DirectionalLight(0x8888ff,0.3);
+    dl2.position.set(-4,-4,2);scene.add(dl2);
+
+    // Atoms
+    geo.atoms.forEach(at=>{
+      const r=getCpkRadius(at.sym);
+      const mesh=new THREE.Mesh(
+        new THREE.SphereGeometry(r,32,32),
+        new THREE.MeshPhongMaterial({color:getCpkColor(at.sym),shininess:80,specular:0x444444})
+      );
+      mesh.position.set(...at.pos);
+      scene.add(mesh);
+    });
+
+    // Bonds — cylinders between pairs
+    geo.bonds.forEach(([i,j])=>{
+      const p1=new THREE.Vector3(...geo.atoms[i].pos);
+      const p2=new THREE.Vector3(...geo.atoms[j].pos);
+      const dir=new THREE.Vector3().subVectors(p2,p1);
+      const len=dir.length();
+      const mid=new THREE.Vector3().addVectors(p1,p2).multiplyScalar(0.5);
+      const cyl=new THREE.Mesh(
+        new THREE.CylinderGeometry(0.08,0.08,len,12),
+        new THREE.MeshPhongMaterial({color:0x999999,shininess:40})
+      );
+      cyl.position.copy(mid);
+      cyl.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());
+      scene.add(cyl);
+    });
+
+    // Mouse drag rotation
+    let isDrag=false,lastX=0,lastY=0;
+    const pivot=new THREE.Group();
+    scene.children.filter(c=>c instanceof THREE.Mesh).forEach(m=>{scene.remove(m);pivot.add(m);});
+    scene.add(pivot);
+    wrap.addEventListener('mousedown',e=>{isDrag=true;lastX=e.clientX;lastY=e.clientY;});
+    wrap.addEventListener('mousemove',e=>{
+      if(!isDrag)return;
+      pivot.rotation.y+=(e.clientX-lastX)*0.01;
+      pivot.rotation.x+=(e.clientY-lastY)*0.01;
+      lastX=e.clientX;lastY=e.clientY;
+    });
+    wrap.addEventListener('mouseup',()=>isDrag=false);
+    wrap.addEventListener('mouseleave',()=>isDrag=false);
+    // Touch support
+    wrap.addEventListener('touchstart',e=>{isDrag=true;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;},{passive:true});
+    wrap.addEventListener('touchmove',e=>{
+      if(!isDrag)return;
+      pivot.rotation.y+=(e.touches[0].clientX-lastX)*0.012;
+      pivot.rotation.x+=(e.touches[0].clientY-lastY)*0.012;
+      lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;
+    },{passive:true});
+    wrap.addEventListener('touchend',()=>isDrag=false);
+
+    function animate(){
+      mol3dAnimId=requestAnimationFrame(animate);
+      if(!isDrag)pivot.rotation.y+=0.004;
+      renderer.render(scene,camera);
+    }
+    animate();
+  }, 60);
+
+  return `<div id="mol3d-wrap">
+    <h3>3D molecule / structure</h3>
+    <div id="${id}" id2="mol3d-canvas-wrap" style="border-radius:10px;overflow:hidden;background:#0d1117;border:1px solid #222;position:relative;height:240px">
+      <div style="color:rgba(255,255,255,0.3);font-size:11px;position:absolute;bottom:6px;right:8px;pointer-events:none">drag to rotate</div>
+    </div>
+  </div>`;
+}
+
+// ─── Compound modal ───────────────────────────────────────────
 function showCompoundModal(){
   if(selectedElements.length<2)return;
   const pred=predictCompound(selectedElements);
   const elList=selectedElements.map(e=>`<span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:12px;font-weight:600;background:${CAT_COLORS[e.cat]};color:${CAT_TEXT[e.cat]};margin:2px">${e.s} – ${e.name}</span>`).join(' + ');
   const enText=pred.enDiff!=='—'?`<div class="c-stat"><div class="c-stat-label">ΔElectronegativity</div><div class="c-stat-val">${pred.enDiff}</div></div>`:'';
   const lewisHTML=drawLewis(selectedElements,pred);
+  const mol3dHTML=drawMolecule3D(selectedElements,pred);
   document.getElementById('compound-result').innerHTML=`
     <div style="margin-bottom:0.75rem;font-size:12px;color:#888">${elList}</div>
     <div class="compound-formula">${pred.formula}</div>
@@ -718,6 +933,7 @@ function showCompoundModal(){
     </div>
     <div class="compound-note">${pred.bondDesc}</div>
     ${lewisHTML?`<div id="lewis-wrap"><h3>Lewis electron dot structure</h3><div id="lewis-svg-wrap">${lewisHTML}</div></div>`:''}
+    ${mol3dHTML}
   `;
   document.getElementById('compound-modal').classList.add('show');
 }
@@ -903,7 +1119,7 @@ document.getElementById('el-modal').addEventListener('click',e=>{if(e.target.id=
 document.getElementById('predict-btn').addEventListener('click',showCompoundModal);
 document.getElementById('clear-sel-btn').addEventListener('click',clearSelection);
 
-function closeCompound(){document.getElementById('compound-modal').classList.remove('show');clearSelection();}
+function closeCompound(){document.getElementById('compound-modal').classList.remove('show');destroyMol3d();clearSelection();}
 document.getElementById('compound-close').addEventListener('click',closeCompound);
 document.getElementById('compound-modal').addEventListener('click',e=>{if(e.target.id==='compound-modal')closeCompound();});
 
